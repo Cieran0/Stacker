@@ -13,6 +13,9 @@ namespace Stacker
             pop,
             dup,
             maths,
+            mem,
+            inc,
+            dec,
             //BLOCKS
             loop
         }
@@ -26,24 +29,33 @@ namespace Stacker
 
         public void Execute(string[] args) 
         {
-            switch (INDEX)
-            {
-                case COMMANDS.push:
-                    PUSH(args);
-                    break;
-                case COMMANDS.print:
-                    PRINT(args);
-                    break;
-                case COMMANDS.pop:
-                    POP(args);
-                    break;
-                case COMMANDS.dup:
-                    DUP(args);
-                    break;
-                case COMMANDS.maths:
-                    MATHS(args);
-                    break;
-            }
+                switch (INDEX)
+                {
+                    case COMMANDS.push:
+                        PUSH(args);
+                        break;
+                    case COMMANDS.print:
+                        PRINT(args);
+                        break;
+                    case COMMANDS.pop:
+                        POP(args);
+                        break;
+                    case COMMANDS.dup:
+                        DUP(args);
+                        break;
+                    case COMMANDS.maths:
+                        MATHS(args);
+                        break;
+                    case COMMANDS.mem:
+                        MEM(args);
+                        break;
+                    case COMMANDS.inc:
+                        INC(args);
+                        break;
+                    case COMMANDS.dec:
+                        DEC(args);
+                        break;
+                }
         }
 
         public void Execute(string[] args, Token[] tokens) 

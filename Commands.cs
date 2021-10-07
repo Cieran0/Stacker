@@ -10,6 +10,9 @@ namespace Stacker
             CheckArgs(2,2, args);
             switch (args[0])
             {
+                case "%b":
+                    stack.Push(byte.Parse(args[0]));
+                    break;
                 case "%i":
                     PushByteArray(ShortToBytes(short.Parse(args[1])));
                     break;
@@ -17,7 +20,7 @@ namespace Stacker
                     stack.Push((byte)args[1][0]);
                     break;
                 case "%s":
-                    pushString(args[1]);
+                    PushString(args[1]);
                     break;
                 default:
                     throw argumentException;
@@ -28,14 +31,32 @@ namespace Stacker
         {
             int[] numbs = new int[2];
             int finalNum = 0;
+            int loc = 0;
+            bool eightBit = false;
 
-            CheckArgs(1,1, args);
-            for(int i =0; i < 2; i++) numbs[i] = BytesToShort(new byte[] { stack.Pop(), stack.Pop() });
+            CheckArgs(1,2, args);
 
-            switch (args[0]) 
+            if (args.Length == 2)
+            {
+                loc = 1;
+                switch (args[0])
+                {
+                    case "%b":
+                    case "%c":
+                        numbs = new int[] { stack.Pop(), stack.Pop() };
+                        eightBit = true;
+                        break;
+                    case "%i":
+                        numbs = new int[] { PopShort(), PopShort() };
+                        break;
+                }
+            }
+            else { numbs = new int[] { PopShort(),PopShort() }; }
+
+            switch (args[loc]) 
             {
                 case "add":
-                    finalNum = numbs[0] + numbs[1];
+                    finalNum = numbs[1] + numbs[0];
                     break;
                 case "min":
                     finalNum = numbs[1] - numbs[0];
@@ -51,7 +72,13 @@ namespace Stacker
                     break;
             }
 
-            PushByteArray(ShortToBytes((short)finalNum));
+            if (!eightBit) {
+                PushByteArray(ShortToBytes((short)finalNum));
+            }
+            else 
+            {
+                stack.Push((byte)finalNum);
+            }
 
         }
 
@@ -86,14 +113,17 @@ namespace Stacker
             string WhatToPrint = "";
             switch (args[0]) 
             {
+                case "%b":
+                    WhatToPrint = stack.Pop().ToString();
+                    break;
                 case "%i":
-                    WhatToPrint = BytesToShort(new byte[] { stack.Pop(), stack.Pop() }).ToString();
+                    WhatToPrint = PopShort().ToString();
                     break;
                 case "%c":
                     WhatToPrint = ((char)stack.Pop()).ToString();
                     break;
                 case "%s":
-                    WhatToPrint = getString();
+                    WhatToPrint = GetString();
                     break;
                 default:
                     throw argumentException;
@@ -111,14 +141,71 @@ namespace Stacker
             else for (int i = 0; i < size; i++) Interpret(tokens);
         }
 
-        private static void pushString(string s) 
+        public static void MEM(string[] args)
+        {
+            CheckArgs(1, 2, args);
+            string op = args[0];
+            int length = 1;
+            if (args.Length > 1) length = int.Parse(args[1]);
+
+            switch (op)
+            {
+                case "get":
+                    GetMem(length);
+                    break;
+                case "set":
+                    SetMem(length);
+                    break;
+                default:
+                    throw argumentException;
+            }
+
+        }
+
+        public static void INC(string[] args) { ModifyTop(args, 1); }
+
+        public static void DEC(string[] args) { ModifyTop(args, -1); }
+
+        private static void ModifyTop(string[] args, int i) 
+        {
+            CheckArgs(0, 1, args);
+            if (args.Length > 0)
+            {
+                switch (args[0])
+                {
+                    case "%b":
+                    case "%c":
+                        stack.Push((byte)(stack.Pop() + i));
+                        break;
+                    case "%i":
+                        PushByteArray(ShortToBytes((short)(PopShort() + i)));
+                        break;
+                }
+            }
+            else PushByteArray(ShortToBytes((short)(PopShort() + i)));
+        }
+
+        private static void GetMem(int length) 
+        {
+            short pointer = PopShort();
+            for (int i = pointer + (length - 1); i >= pointer; i--) stack.Push(MEMORY[i]);
+        }
+
+        private static void SetMem(int length) 
+        {
+            short pointer = PopShort();
+            for (int i = pointer; i < pointer + length; i++) { MEMORY[i] = stack.Pop(); }
+            PushByteArray(ShortToBytes(pointer));
+        }
+
+        private static void PushString(string s) 
         {
             s = s.Replace(@"\n", "\n");
             stack.Push(0);
             for (int i = s.Length - 1; i >= 0; i--) { stack.Push((byte)s[i]); }
         }
 
-        private static string getString()
+        private static string GetString()
         {
             byte temp;
             string s = "";
@@ -136,6 +223,8 @@ namespace Stacker
         {
             return (short)(eight[0] << 8 | eight[1]);
         }
+
+        private static short PopShort() { return BytesToShort(new byte[] { stack.Pop(), stack.Pop() }); }
 
         private static byte[] ShortToBytes(short sixteen)
         {

@@ -5,8 +5,9 @@ namespace Stacker
 {
     class Program
     {
+        public static byte[] MEMORY = new byte[short.MaxValue];
 
-        static string[] commandNames = {"push", "print", "pop", "dup", "maths"};
+        static string[] commandNames = {"push", "print", "pop", "dup", "maths", "mem", "inc", "dec"};
         static string[] blockNames = { "loop" };
 
         public static Command[] commands;
