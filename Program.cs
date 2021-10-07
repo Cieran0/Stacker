@@ -71,7 +71,7 @@ namespace Stacker
         static Token[] Tokenise(string input) 
         {
             //Console.WriteLine(input);
-            System.Diagnostics.Stopwatch SW = new System.Diagnostics.Stopwatch();
+            //System.Diagnostics.Stopwatch SW = new System.Diagnostics.Stopwatch();
             //SW.Start();
             List<Token> tokens = new List<Token>();
             string s = "";
