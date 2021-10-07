@@ -53,7 +53,7 @@ namespace Stacker
                 if (!char.IsWhiteSpace(input[i])) { s += input[i]; }
                 for (int q = 0; q < commandNames.Length; q++) 
                 {
-                    if (s == commandNames[q]) { UpdateTokenList(ref tokens, q.ToString(), input, ref i); }
+                    if (s == commandNames[q]) { UpdateTokenList(ref tokens, q.ToString(), input, ref i); s = "";}
                 }
 
             }
