@@ -7,7 +7,7 @@ namespace Stacker
     {
         public static byte[] MEMORY = new byte[short.MaxValue];
 
-        static string[] commandNames = {"push", "print", "pop", "dup", "maths", "mem", "inc", "dec"};
+        static string[] commandNames = { "push", "print", "pop", "dup", "maths", "mem", "inc", "dec" };
         static string[] blockNames = { "loop" };
 
         public static Command[] commands;
@@ -20,7 +20,7 @@ namespace Stacker
             commands = new Command[commandNames.Length + blockNames.Length];
             for (byte i = 0; i < commands.Length; i++) { commands[i] = new Command(i); }
             Console.Write(">>> ");
-            while (true) 
+            while (true)
             {
                 Interpret(Tokenise(Console.ReadLine()));
                 Console.Write("\n>>> ");
@@ -28,14 +28,14 @@ namespace Stacker
 
         }
 
-        public enum TokenType 
-        { 
+        public enum TokenType
+        {
             COMMAND,
             ARGUMENT,
             BLOCK
         }
 
-        public struct Token 
+        public struct Token
         {
             public TokenType type;
             public string Svalue;
@@ -43,7 +43,7 @@ namespace Stacker
             public Token[] Tvalue;
         }
 
-        static Token NewToken(TokenType type, string val) 
+        static Token NewToken(TokenType type, string val)
         {
             Token placeholder = new Token();
             placeholder.type = type;
@@ -51,7 +51,7 @@ namespace Stacker
             return placeholder;
         }
 
-        static Token NewToken(TokenType type, int index) 
+        static Token NewToken(TokenType type, int index)
         {
             Token placeholder = new Token();
             placeholder.type = type;
@@ -68,7 +68,7 @@ namespace Stacker
             return placeholder;
         }
 
-        static Token[] Tokenise(string input) 
+        static Token[] Tokenise(string input)
         {
             //Console.WriteLine(input);
             //System.Diagnostics.Stopwatch SW = new System.Diagnostics.Stopwatch();
@@ -76,7 +76,7 @@ namespace Stacker
             List<Token> tokens = new List<Token>();
             string s = "";
 
-            for (int i = 0; i < input.Length; i++) 
+            for (int i = 0; i < input.Length; i++)
             {
                 if (!char.IsWhiteSpace(input[i])) { s += input[i]; }
                 for (int q = 0; q < commandNames.Length; q++) if (s == commandNames[q]) { AddCommandToken(ref tokens, q, input, ref i); s = ""; };
@@ -119,22 +119,22 @@ namespace Stacker
             }
             if (ss != "") tokens.Add(NewToken(TokenType.ARGUMENT, ss));
             i += j;
-            j =1; k = 0;
+            j = 1; k = 0;
 
             while (input[i + j] != '{') if (!char.IsWhiteSpace(input[i + j])) throw argumentException; else { j++; }
             j++;
-            while (!CanLeave) 
+            while (!CanLeave)
             {
                 if (input[i + j + k] == '}' && open == 0) { CanLeave = true; }
                 else if (input[i + j + k] == '{') { open++; }
                 else if (input[i + j + k] == '}') { open--; }
-                k++; 
+                k++;
             }
             tokens[pos] = NewToken(TokenType.BLOCK, index, Tokenise(input.Substring((i + j), k)));
             i = i + j + k;
         }
 
-        static void AddCommandToken(ref List<Token> tokens, int index, string input, ref int i) 
+        static void AddCommandToken(ref List<Token> tokens, int index, string input, ref int i)
         {
             tokens.Add(NewToken(TokenType.COMMAND, index));
             string ss = "";
@@ -168,15 +168,15 @@ namespace Stacker
             i += j;
         }
 
-        public static void Interpret(Token[] tokens) 
+        public static void Interpret(Token[] tokens)
         {
-            
+
             string[] args;
             int argCounter = 0;
             int j = 0;
-            for (int i = 0; i < tokens.Length; i++) 
+            for (int i = 0; i < tokens.Length; i++)
             {
-                if (tokens[i].type != TokenType.ARGUMENT) 
+                if (tokens[i].type != TokenType.ARGUMENT)
                 {
                     j = 1;
                     argCounter = 0;
@@ -196,9 +196,9 @@ namespace Stacker
                     {
                         commands[tokens[i].index].Execute(args);
                     }
-                    else 
+                    else
                     {
-                        commands[tokens[i].index + commandNames.Length].Execute(args,tokens[i].Tvalue);
+                        commands[tokens[i].index + commandNames.Length].Execute(args, tokens[i].Tvalue);
                     }
                 }
             }

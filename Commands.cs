@@ -7,7 +7,7 @@ namespace Stacker
     {
         public static void PUSH(string[] args)
         {
-            CheckArgs(2,2, args);
+            CheckArgs(2, 2, args);
             switch (args[0])
             {
                 case "%b":
@@ -27,14 +27,14 @@ namespace Stacker
             }
         }
 
-        public static void MATHS(string[] args) 
+        public static void MATHS(string[] args)
         {
             int[] numbs = new int[2];
             int finalNum = 0;
             int loc = 0;
             bool eightBit = false;
 
-            CheckArgs(1,2, args);
+            CheckArgs(1, 2, args);
 
             if (args.Length == 2)
             {
@@ -51,9 +51,9 @@ namespace Stacker
                         break;
                 }
             }
-            else { numbs = new int[] { PopShort(),PopShort() }; }
+            else { numbs = new int[] { PopShort(), PopShort() }; }
 
-            switch (args[loc]) 
+            switch (args[loc])
             {
                 case "add":
                     finalNum = numbs[1] + numbs[0];
@@ -72,10 +72,11 @@ namespace Stacker
                     break;
             }
 
-            if (!eightBit) {
+            if (!eightBit)
+            {
                 PushByteArray(ShortToBytes((short)finalNum));
             }
-            else 
+            else
             {
                 stack.Push((byte)finalNum);
             }
@@ -84,13 +85,13 @@ namespace Stacker
 
         private static void CheckArgs(int min, int max, string[] args) { if (args.Length > max || args.Length < min) { throw argumentException; } }
 
-        public static void DUP(string[] args) 
-        { 
-            CheckArgs(0,1, args);
-            if (args.Length == 0) 
+        public static void DUP(string[] args)
+        {
+            CheckArgs(0, 1, args);
+            if (args.Length == 0)
             {
                 byte x = stack.Pop();
-                stack.Push(x); stack.Push(x); 
+                stack.Push(x); stack.Push(x);
             }
             else
             {
@@ -105,18 +106,18 @@ namespace Stacker
             }
         }
 
-        public static void POP(string[] args) 
-        { 
-            CheckArgs(0,1, args);
+        public static void POP(string[] args)
+        {
+            CheckArgs(0, 1, args);
             if (args.Length > 0) { for (int i = 0; i < int.Parse(args[0]); i++) stack.Pop(); }
             else stack.Pop();
         }
 
-        public static void PRINT(string[] args) 
+        public static void PRINT(string[] args)
         {
-            CheckArgs(1,1, args);
+            CheckArgs(1, 1, args);
             string WhatToPrint = "";
-            switch (args[0]) 
+            switch (args[0])
             {
                 case "%b":
                     WhatToPrint = stack.Pop().ToString();
@@ -134,12 +135,12 @@ namespace Stacker
                     throw argumentException;
             }
             Console.Write(WhatToPrint);
-        
+
         }
 
-        public static void LOOP(string[] args, Token[] tokens) 
+        public static void LOOP(string[] args, Token[] tokens)
         {
-            CheckArgs(1,1, args);
+            CheckArgs(1, 1, args);
             int size = int.Parse(args[0]);
             if (size < 0) { throw argumentException; }
             if (size == 0) while (true) Interpret(tokens);
@@ -171,7 +172,7 @@ namespace Stacker
 
         public static void DEC(string[] args) { ModifyTop(args, -1); }
 
-        private static void ModifyTop(string[] args, int i) 
+        private static void ModifyTop(string[] args, int i)
         {
             CheckArgs(0, 1, args);
             if (args.Length > 0)
@@ -190,20 +191,20 @@ namespace Stacker
             else PushByteArray(ShortToBytes((short)(PopShort() + i)));
         }
 
-        private static void GetMem(int length) 
+        private static void GetMem(int length)
         {
             short pointer = PopShort();
             for (int i = pointer + (length - 1); i >= pointer; i--) stack.Push(MEMORY[i]);
         }
 
-        private static void SetMem(int length) 
+        private static void SetMem(int length)
         {
             short pointer = PopShort();
             for (int i = pointer; i < pointer + length; i++) { MEMORY[i] = stack.Pop(); }
             PushByteArray(ShortToBytes(pointer));
         }
 
-        private static void PushString(string s) 
+        private static void PushString(string s)
         {
             s = s.Replace(@"\n", "\n");
             stack.Push(0);
@@ -215,7 +216,7 @@ namespace Stacker
             byte temp;
             string s = "";
             int len = stack.Count;
-            for (int i = 0; i < len; i++) 
+            for (int i = 0; i < len; i++)
             {
                 temp = stack.Pop();
                 if (temp != 0) { s += (char)temp; }
@@ -224,7 +225,7 @@ namespace Stacker
             return s;
         }
 
-        private static short BytesToShort(byte[] eight) 
+        private static short BytesToShort(byte[] eight)
         {
             return (short)(eight[0] << 8 | eight[1]);
         }
