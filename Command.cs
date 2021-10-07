@@ -12,7 +12,9 @@ namespace Stacker
             print, 
             pop,
             dup,
-            maths
+            maths,
+            //BLOCKS
+            loop
         }
 
         public COMMANDS INDEX { get; }
@@ -40,6 +42,16 @@ namespace Stacker
                     break;
                 case COMMANDS.maths:
                     MATHS(args);
+                    break;
+            }
+        }
+
+        public void Execute(string[] args, Token[] tokens) 
+        {
+            switch (INDEX) 
+            { 
+                case COMMANDS.loop:
+                    LOOP(args, tokens);
                     break;
             }
         }
