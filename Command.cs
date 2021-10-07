@@ -17,7 +17,7 @@ namespace Stacker
 
         static Dictionary<COMMANDS, Action<string[]>> commandDict = new Dictionary<COMMANDS, Action<string[]>>()
         {
-            { COMMANDS.push, PUSH},{ COMMANDS.print, PRINT},{ COMMANDS.pop, POP},{ COMMANDS.dup, DUP},{ COMMANDS.maths, MATHS},{ COMMANDS.mem, MEM},{ COMMANDS.inc, INC},{ COMMANDS.dec, DEC},
+            { COMMANDS.push, PUSH}, { COMMANDS.print, PRINT}, { COMMANDS.pop, POP}, { COMMANDS.dup, DUP}, { COMMANDS.maths, MATHS}, { COMMANDS.mem, MEM}, { COMMANDS.inc, INC}, { COMMANDS.dec, DEC},
         };
 
         static Dictionary<COMMANDS, Action<string[], Token[]>> blockDict = new Dictionary<COMMANDS, Action<string[], Token[]>>()
@@ -31,6 +31,6 @@ namespace Stacker
 
         public void Execute(string[] args) => commandDict[INDEX].Invoke(args);
 
-        public void Execute(string[] args, Token[] tokens) => blockDict[INDEX - commandDict.Count].Invoke(args, tokens);
+        public void Execute(string[] args, Token[] tokens) => blockDict[INDEX].Invoke(args, tokens);
     }
 }

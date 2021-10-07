@@ -105,7 +105,12 @@ namespace Stacker
             }
         }
 
-        public static void POP(string[] args) { CheckArgs(0,0, args); stack.Pop(); }
+        public static void POP(string[] args) 
+        { 
+            CheckArgs(0,1, args);
+            if (args.Length > 0) { for (int i = 0; i < int.Parse(args[0]); i++) stack.Pop(); }
+            else stack.Pop();
+        }
 
         public static void PRINT(string[] args) 
         {
