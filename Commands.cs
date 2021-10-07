@@ -106,7 +106,9 @@ namespace Stacker
         {
             CheckArgs(1,1, args);
             int size = int.Parse(args[0]);
-            for (int i = 0; i < size; i++) { Interpret(tokens); }
+            if (size < 0) { throw argumentException; }
+            if (size == 0) while (true) Interpret(tokens);
+            else for (int i = 0; i < size; i++) Interpret(tokens);
         }
 
         private static void pushString(string s) 
