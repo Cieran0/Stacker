@@ -70,6 +70,7 @@ namespace Stacker
 
         static Token[] Tokenise(string input) 
         {
+            //Console.WriteLine(input);
             System.Diagnostics.Stopwatch SW = new System.Diagnostics.Stopwatch();
             //SW.Start();
             List<Token> tokens = new List<Token>();
@@ -93,6 +94,9 @@ namespace Stacker
             int pos = tokens.Count - 1;
             int j = 0;
             int k = 0;
+            int open = 0;
+            bool CanLeave = false;
+
             while (input[i + j] != ')')
             {
                 if (input[i + j] == '\"')
@@ -113,17 +117,19 @@ namespace Stacker
                 }
                 j++;
             }
-            if (ss != "")
-            {
-                tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-            }
-            ss = "";
+            if (ss != "") tokens.Add(NewToken(TokenType.ARGUMENT, ss));
             i += j;
             j =1; k = 0;
 
             while (input[i + j] != '{') if (!char.IsWhiteSpace(input[i + j])) throw argumentException; else { j++; }
             j++;
-            while (input[i + j + k] != '}') k++;
+            while (!CanLeave) 
+            {
+                if (input[i + j + k] == '}' && open == 0) { CanLeave = true; }
+                else if (input[i + j + k] == '{') { open++; }
+                else if (input[i + j + k] == '}') { open--; }
+                k++; 
+            }
             tokens[pos] = NewToken(TokenType.BLOCK, index, Tokenise(input.Substring((i + j), k)));
             i = i + j + k;
         }

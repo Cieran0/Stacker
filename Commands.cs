@@ -11,7 +11,7 @@ namespace Stacker
             switch (args[0])
             {
                 case "%b":
-                    stack.Push(byte.Parse(args[0]));
+                    stack.Push(byte.Parse(args[1]));
                     break;
                 case "%i":
                     PushByteArray(ShortToBytes(short.Parse(args[1])));
