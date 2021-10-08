@@ -1,0 +1,29 @@
+﻿push("%i",1) push("%s","Enter the max number: ") pop(2) print("%s") input("%i")
+LOOP("stk")
+{
+	dup(2) dup(2) 
+	push("%i",3) maths("%") swap(2)
+	dup(2) push("%i",5) maths("%") swap(2)
+	push("%i",15) maths("%")
+	
+	IF("stk","==",0) 
+	{
+		push("%s","FizzBuzz") pop(2) print("%s")
+		pop(4)
+	}
+	ELIF("stk","==",0) 
+	{
+		push("%s","Buzz") pop(2) print("%s")
+		pop(2)
+	}
+	ELIF("stk","==",0) 
+	{
+		push("%s","Fizz") pop(2) print("%s")
+	}
+	ELSE() 
+	{
+		dup(2) print("%i")
+	}
+	push("%b",10) print("%c")
+	inc()
+}

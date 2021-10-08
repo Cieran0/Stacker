@@ -15,14 +15,14 @@ namespace Stacker
             LOOP, IF, ELSE, ELIF
         }
 
-        static Dictionary<COMMANDS, Action<string[]>> commandDict = new Dictionary<COMMANDS, Action<string[]>>()
+        public static Dictionary<COMMANDS, Action<string[]>> commandDict = new Dictionary<COMMANDS, Action<string[]>>()
         {
             { COMMANDS.push,  PUSH  }, { COMMANDS.print, PRINT }, { COMMANDS.pop,   POP   }, { COMMANDS.dup, DUP },
             { COMMANDS.maths, MATHS }, { COMMANDS.mem,   MEM   }, { COMMANDS.inc,   INC   }, { COMMANDS.dec, DEC }, 
             { COMMANDS.swap,  SWAP  }, { COMMANDS.exit,  EXIT  }, { COMMANDS.input, INPUT }
         };
 
-        static Dictionary<COMMANDS, Action<string[], Token[]>> blockDict = new Dictionary<COMMANDS, Action<string[], Token[]>>()
+        public static Dictionary<COMMANDS, Action<string[], Token[]>> blockDict = new Dictionary<COMMANDS, Action<string[], Token[]>>()
         {
             { COMMANDS.LOOP, LOOP},{ COMMANDS.IF, IF},{ COMMANDS.ELSE, ELSE},{ COMMANDS.ELIF, IF}
         };

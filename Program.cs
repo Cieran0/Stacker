@@ -9,9 +9,6 @@ namespace Stacker
 
         public static byte[] MEMORY = new byte[short.MaxValue];
 
-        static string[] commandNames = { "push", "print", "pop", "dup", "maths", "mem", "inc", "dec", "swap", "exit", "input" };
-        static string[] blockNames = { "LOOP", "IF", "ELSE", "ELIF" };
-
         public static bool SkipElses = true;
         public static Command[] commands;
         public static Stack<byte> stack = new Stack<byte>();
@@ -21,7 +18,7 @@ namespace Stacker
         static void Main(string[] args)
         {
             string input = "";
-            commands = new Command[commandNames.Length + blockNames.Length];
+            commands = new Command[Enum.GetNames(typeof(Command.COMMANDS)).Length];
             for (byte i = 0; i < commands.Length; i++) { commands[i] = new Command(i); }
             Console.Write("Stacker v");
             Console.ForegroundColor = ConsoleColor.Green;
@@ -33,7 +30,8 @@ namespace Stacker
                 Console.ForegroundColor = ConsoleColor.White;
                 input = Console.ReadLine();
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Interpret(Tokenise(input));
+                if (input.StartsWith('\"') && input.EndsWith('\"')) { Interpret(Tokenise(System.IO.File.ReadAllText(input.Substring(1, input.Length-2)))) ; }
+                else Interpret(Tokenise(input));
                 Console.ForegroundColor = ConsoleColor.Red;
                 if (Console.CursorLeft != Console.WindowLeft) Console.Write('\n'); 
                 Console.Write(">>> ");
@@ -94,8 +92,11 @@ namespace Stacker
             for (int i = 0; i < input.Length; i++)
             {
                 if (!char.IsWhiteSpace(input[i])) { s += input[i]; }
-                for (int q = 0; q < commandNames.Length; q++) if (s == commandNames[q]) { AddCommandToken(ref tokens, q, input, ref i); s = ""; };
-                for (int q = 0; q < blockNames.Length; q++) if (s == blockNames[q]) { AddBlockToken(ref tokens, q, input, ref i); s = ""; };
+                for (int q = 0; q < commands.Length; q++) if (s == ((Command.COMMANDS)q).ToString()) 
+                    {
+                        if (q > (Command.commandDict.Values.Count - 1)) { AddBlockToken(ref tokens, q, input, ref i); s = ""; }
+                        else AddCommandToken(ref tokens, q, input, ref i); s = "";
+                    }
             }
             //SW.Stop();
             //Console.WriteLine("Parsed {0} Tokens in {1}ms", tokens.Count, SW.ElapsedMilliseconds);
@@ -185,12 +186,13 @@ namespace Stacker
 
         public static void Interpret(Token[] tokens)
         {
-
+            bool skip = false;
             string[] args;
             int argCounter = 0;
             int j = 0;
             for (int i = 0; i < tokens.Length; i++)
             {
+                skip = false;
                 if (tokens[i].type != TokenType.ARGUMENT)
                 {
                     j = 1;
@@ -215,13 +217,13 @@ namespace Stacker
                     {
                         if (tokens[i].index == (int)Command.COMMANDS.ELSE || tokens[i].index == (int)Command.COMMANDS.ELIF)
                         {
-                            if (SkipElses) break;
+                            if (SkipElses) skip=true;
                         }
                         else 
                         { 
                             SkipElses = false; 
                         }
-                        commands[tokens[i].index + commandNames.Length].Execute(args, tokens[i].Tvalue);
+                        if(!skip) commands[tokens[i].index].Execute(args, tokens[i].Tvalue);
                     }
                 }
             }
