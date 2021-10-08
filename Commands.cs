@@ -239,6 +239,7 @@ namespace Stacker
             s = s.Replace(@"\n", "\n");
             stack.Push(0);
             for (int i = s.Length - 1; i >= 0; i--) { stack.Push((byte)s[i]); }
+            PushByteArray(ShortToBytes((short)s.Length));
         }
 
         private static string GetString()
