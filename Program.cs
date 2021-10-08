@@ -31,13 +31,26 @@ namespace Stacker
                 Console.ForegroundColor = ConsoleColor.White;
                 input = Console.ReadLine();
                 Console.ForegroundColor = ConsoleColor.Blue;
-                if (input.StartsWith('\"') && input.EndsWith('\"')) { Interpret(Tokenise(System.IO.File.ReadAllText(input.Substring(1, input.Length-2)))) ; }
+                if (input.StartsWith('\"') && input.EndsWith('\"')) { Interpret(Tokenise(ReadInFile(input.Substring(1, input.Length-2)))) ; }
                 else Interpret(Tokenise(input));
                 Console.ForegroundColor = ConsoleColor.Red;
                 if (Console.CursorLeft != Console.WindowLeft) Console.Write('\n'); 
                 Console.Write(">>> ");
             }
 
+        }
+
+        static string ReadInFile(string path) 
+        {
+            string formated = "";
+            string[] lines = System.IO.File.ReadAllLines(path);
+            foreach (string line in lines) 
+            {
+                formated += " ";
+                if (line.Contains("//")) formated += line.Split("//")[0];
+                else formated += line;
+            }
+            return formated;
         }
 
         public enum TokenType
