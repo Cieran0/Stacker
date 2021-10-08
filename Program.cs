@@ -213,7 +213,7 @@ namespace Stacker
                     }
                     else if(tokens[i].type == TokenType.BLOCK)
                     {
-                        if (tokens[i].index + commandNames.Length == (int)Command.COMMANDS.ELSE || tokens[i].index + commandNames.Length == (int)Command.COMMANDS.ELIF)
+                        if (tokens[i].index == (int)Command.COMMANDS.ELSE || tokens[i].index == (int)Command.COMMANDS.ELIF)
                         {
                             if (SkipElses) break;
                         }
