@@ -189,6 +189,18 @@ namespace Stacker
 
         public static void ELSE(string[] args, Token[] tokens) { CheckArgs(0, 0, args); SkipElses = true; Interpret(tokens); }
 
+        public static void SWAP(string[] args) 
+        {
+            CheckArgs(0, 1, args);
+            int size = 1;
+            if (args.Length > 0) { size = IFSGFSEPI(args[0]); }
+            byte[,] toSwap = new byte[2,size];
+            for (int i = 0; i < 2; i++) for (int j = 0; j < size; j++) { toSwap[i, j] = stack.Pop(); }
+            for (int i = 0; i < 2; i++) for (int j = size - 1; j >= 0; j--) { stack.Push(toSwap[i,j]); }
+        }
+
+        public static void EXIT(string[] args) { CheckArgs(0, 0, args); Environment.Exit(0); }
+
         //If From Stack Get From Stack Else Parse Integer
         private static int IFSGFSEPI(string arg) 
         {

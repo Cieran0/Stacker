@@ -5,9 +5,11 @@ namespace Stacker
 {
     class Program
     {
+        const string VER = "0.1.0\n";
+
         public static byte[] MEMORY = new byte[short.MaxValue];
 
-        static string[] commandNames = { "push", "print", "pop", "dup", "maths", "mem", "inc", "dec" };
+        static string[] commandNames = { "push", "print", "pop", "dup", "maths", "mem", "inc", "dec", "swap", "exit" };
         static string[] blockNames = { "LOOP", "IF", "ELSE", "ELIF" };
 
         public static bool SkipElses = true;
@@ -18,13 +20,23 @@ namespace Stacker
 
         static void Main(string[] args)
         {
+            string input = "";
             commands = new Command[commandNames.Length + blockNames.Length];
             for (byte i = 0; i < commands.Length; i++) { commands[i] = new Command(i); }
+            Console.Write("Stacker v");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(VER);
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(">>> ");
             while (true)
             {
-                Interpret(Tokenise(Console.ReadLine()));
-                Console.Write("\n>>> ");
+                Console.ForegroundColor = ConsoleColor.White;
+                input = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Interpret(Tokenise(input));
+                Console.ForegroundColor = ConsoleColor.Red;
+                if (Console.CursorLeft != Console.WindowLeft) Console.Write('\n'); 
+                Console.Write(">>> ");
             }
 
         }
