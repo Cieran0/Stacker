@@ -9,8 +9,8 @@ namespace Stacker
         const string VER = "0.1.0\n";
 
         public static byte[] MEMORY = new byte[short.MaxValue];
-
         public static bool SkipElses = true;
+
         public static Command[] commands;
         public static Stack<byte> stack = new Stack<byte>();
         public static NotImplementedException notImplemented = new NotImplementedException();
@@ -59,7 +59,6 @@ namespace Stacker
             ARGUMENT,
             BLOCK
         }
-
          
         public struct Token
         {
@@ -69,7 +68,6 @@ namespace Stacker
             public Token[] Tvalue;
         }
     
-
         static Token NewToken(TokenType type, string val)
         {
             Token placeholder = new Token();
@@ -78,28 +76,17 @@ namespace Stacker
             return placeholder;
         }
 
-        static Token NewToken(TokenType type, int index)
+        static Token NewToken(TokenType type, int index, Token[] tokens=null)
         {
             Token placeholder = new Token();
             placeholder.type = type;
             placeholder.index = index;
-            return placeholder;
-        }
-
-        static Token NewToken(TokenType type, int index, Token[] tokens)
-        {
-            Token placeholder = new Token();
-            placeholder.type = type;
-            placeholder.index = index;
-            placeholder.Tvalue = tokens;
+            if(tokens != null) placeholder.Tvalue = tokens;
             return placeholder;
         }
 
         static Token[] Tokenise(string input)
         {
-            //Console.WriteLine(input);
-            //System.Diagnostics.Stopwatch SW = new System.Diagnostics.Stopwatch();
-            //SW.Start();
             List<Token> tokens = new List<Token>();
             string s = "";
 
@@ -112,8 +99,6 @@ namespace Stacker
                         else AddCommandToken(ref tokens, q, input, ref i); s = "";
                     }
             }
-            //SW.Stop();
-            //Console.WriteLine("Parsed {0} Tokens in {1}ms", tokens.Count, SW.ElapsedMilliseconds);
             return tokens.ToArray();
         }
 
