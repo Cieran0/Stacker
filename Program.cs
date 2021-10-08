@@ -8,8 +8,9 @@ namespace Stacker
         public static byte[] MEMORY = new byte[short.MaxValue];
 
         static string[] commandNames = { "push", "print", "pop", "dup", "maths", "mem", "inc", "dec" };
-        static string[] blockNames = { "loop" };
+        static string[] blockNames = { "LOOP", "IF", "ELSE", "ELIF" };
 
+        public static bool SkipElses = true;
         public static Command[] commands;
         public static Stack<byte> stack = new Stack<byte>();
         public static NotImplementedException notImplemented = new NotImplementedException();
@@ -35,6 +36,7 @@ namespace Stacker
             BLOCK
         }
 
+         
         public struct Token
         {
             public TokenType type;
@@ -42,6 +44,7 @@ namespace Stacker
             public int index;
             public Token[] Tvalue;
         }
+    
 
         static Token NewToken(TokenType type, string val)
         {
@@ -196,8 +199,16 @@ namespace Stacker
                     {
                         commands[tokens[i].index].Execute(args);
                     }
-                    else
+                    else if(tokens[i].type == TokenType.BLOCK)
                     {
+                        if (tokens[i].index + commandNames.Length == (int)Command.COMMANDS.ELSE || tokens[i].index + commandNames.Length == (int)Command.COMMANDS.ELIF)
+                        {
+                            if (SkipElses) break;
+                        }
+                        else 
+                        { 
+                            SkipElses = false; 
+                        }
                         commands[tokens[i].index + commandNames.Length].Execute(args, tokens[i].Tvalue);
                     }
                 }

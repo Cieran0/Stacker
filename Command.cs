@@ -12,7 +12,7 @@ namespace Stacker
             //COMMANDS
             push, print, pop, dup, maths, mem, inc, dec,
             //BLOCKS
-            loop
+            LOOP, IF, ELSE, ELIF
         }
 
         static Dictionary<COMMANDS, Action<string[]>> commandDict = new Dictionary<COMMANDS, Action<string[]>>()
@@ -22,7 +22,7 @@ namespace Stacker
 
         static Dictionary<COMMANDS, Action<string[], Token[]>> blockDict = new Dictionary<COMMANDS, Action<string[], Token[]>>()
         {
-            { COMMANDS.loop, LOOP}
+            { COMMANDS.LOOP, LOOP},{ COMMANDS.IF, IF},{ COMMANDS.ELSE, ELSE},{ COMMANDS.ELIF, IF}
         };
 
         public COMMANDS INDEX { get; }

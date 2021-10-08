@@ -95,12 +95,9 @@ namespace Stacker
             }
             else
             {
-                byte[] x = new byte[int.Parse(args[0])];
-                for (int i = x.Length - 1; i >= 0; i--)
-                {
-                    x[i] = stack.Pop();
-
-                }
+                int size = IFSGFSEPI(args[0]);
+                byte[] x = new byte[size];
+                for (int i = x.Length - 1; i >= 0; i--) x[i] = stack.Pop();
                 PushByteArray(x);
                 PushByteArray(x);
             }
@@ -109,7 +106,7 @@ namespace Stacker
         public static void POP(string[] args)
         {
             CheckArgs(0, 1, args);
-            if (args.Length > 0) { for (int i = 0; i < int.Parse(args[0]); i++) stack.Pop(); }
+            if (args.Length > 0) { int size = IFSGFSEPI(args[0]); for (int i = 0; i < size; i++) stack.Pop(); }
             else stack.Pop();
         }
 
@@ -138,21 +135,12 @@ namespace Stacker
 
         }
 
-        public static void LOOP(string[] args, Token[] tokens)
-        {
-            CheckArgs(1, 1, args);
-            int size = int.Parse(args[0]);
-            if (size < 0) { throw argumentException; }
-            if (size == 0) while (true) Interpret(tokens);
-            else for (int i = 0; i < size; i++) Interpret(tokens);
-        }
-
         public static void MEM(string[] args)
         {
             CheckArgs(1, 2, args);
             string op = args[0];
             int length = 1;
-            if (args.Length > 1) length = int.Parse(args[1]);
+            if (args.Length > 1) length = IFSGFSEPI(args[1]);
 
             switch (op)
             {
@@ -171,6 +159,48 @@ namespace Stacker
         public static void INC(string[] args) { ModifyTop(args, 1); }
 
         public static void DEC(string[] args) { ModifyTop(args, -1); }
+
+        //BLOCKS
+        public static void LOOP(string[] args, Token[] tokens)
+        {
+            CheckArgs(1, 1, args);
+            int size = IFSGFSEPI(args[0]);
+            if (size < 0) { throw argumentException; }
+            if (size == 0) while (true) Interpret(tokens);
+            else for (int i = 0; i < size; i++) Interpret(tokens);
+        }
+
+        public static void IF(string[] args, Token[] tokens) 
+        {
+            CheckArgs(3, 3, args);
+            int[] num = new int[2]; num[1] = IFSGFSEPI(args[2]); num[0] = IFSGFSEPI(args[0]); 
+            bool condition = false;
+            switch (args[1]) 
+            {
+                case "==": condition = (num[0] == num[1]); break;
+                case "!=": condition = (num[0] != num[1]); break;
+                case ">=": condition = (num[0] >= num[1]); break;
+                case "<=": condition = (num[0] <= num[1]); break;
+                case ">": condition = (num[0] > num[1]); break;
+                case "<": condition = (num[0] < num[1]); break;
+            }
+            if (condition) { SkipElses = true; Interpret(tokens); } else SkipElses = false;
+        }
+
+        public static void ELSE(string[] args, Token[] tokens) { CheckArgs(0, 0, args); SkipElses = true; Interpret(tokens); }
+
+        //If From Stack Get From Stack Else Parse Integer
+        private static int IFSGFSEPI(string arg) 
+        {
+            switch (arg) 
+            {
+                case "stk8":
+                    return stack.Pop();
+                case "stk":
+                    return PopShort();
+            }
+            return int.Parse(arg);
+        }
 
         private static void ModifyTop(string[] args, int i)
         {
