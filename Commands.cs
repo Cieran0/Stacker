@@ -129,7 +129,8 @@ namespace Stacker
                     WhatToPrint = GetString();
                     break;
                 default:
-                    throw argumentException;
+                    WhatToPrint = args[0];
+                    break;
             }
             Console.Write(WhatToPrint);
 

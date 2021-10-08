@@ -1,4 +1,4 @@
-﻿push("%i",1) push("%s","Enter the max number: ") pop(2) print("%s") input("%i")
+﻿push("%i",1) print("Enter the max number: ") input("%i")
 LOOP("stk")
 {
 	dup(2) dup(2) 
@@ -8,17 +8,17 @@ LOOP("stk")
 	
 	IF("stk","==",0) 
 	{
-		push("%s","FizzBuzz") pop(2) print("%s")
+		print("FizzBuzz")
 		pop(4)
 	}
 	ELIF("stk","==",0) 
 	{
-		push("%s","Buzz") pop(2) print("%s")
+		print("Buzz")
 		pop(2)
 	}
 	ELIF("stk","==",0) 
 	{
-		push("%s","Fizz") pop(2) print("%s")
+		print("Fizz")
 	}
 	ELSE() 
 	{
