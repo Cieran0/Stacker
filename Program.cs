@@ -1,4 +1,5 @@
 ﻿using System;
+using static Stacker.Command;
 using System.Collections.Generic;
 
 namespace Stacker
@@ -18,7 +19,7 @@ namespace Stacker
         static void Main(string[] args)
         {
             string input = "";
-            commands = new Command[Enum.GetNames(typeof(Command.COMMANDS)).Length];
+            commands = new Command[Enum.GetNames(typeof(COMMANDS)).Length];
             for (byte i = 0; i < commands.Length; i++) { commands[i] = new Command(i); }
             Console.Write("Stacker v");
             Console.ForegroundColor = ConsoleColor.Green;
@@ -92,9 +93,9 @@ namespace Stacker
             for (int i = 0; i < input.Length; i++)
             {
                 if (!char.IsWhiteSpace(input[i])) { s += input[i]; }
-                for (int q = 0; q < commands.Length; q++) if (s == ((Command.COMMANDS)q).ToString()) 
+                for (int q = 0; q < commands.Length; q++) if (s == ((COMMANDS)q).ToString()) 
                     {
-                        if (q > (Command.commandDict.Values.Count - 1)) { AddBlockToken(ref tokens, q, input, ref i); s = ""; }
+                        if (q > (commandDict.Values.Count - 1)) { AddBlockToken(ref tokens, q, input, ref i); s = ""; }
                         else AddCommandToken(ref tokens, q, input, ref i); s = "";
                     }
             }
@@ -215,7 +216,7 @@ namespace Stacker
                     }
                     else if(tokens[i].type == TokenType.BLOCK)
                     {
-                        if (tokens[i].index == (int)Command.COMMANDS.ELSE || tokens[i].index == (int)Command.COMMANDS.ELIF)
+                        if (tokens[i].index == (int)COMMANDS.ELSE || tokens[i].index == (int)COMMANDS.ELIF)
                         {
                             if (SkipElses) skip=true;
                         }
