@@ -55,20 +55,20 @@ namespace Stacker
 
             switch (args[loc])
             {
-                case "add":
+                case "+":
                     finalNum = numbs[1] + numbs[0];
                     break;
-                case "min":
+                case "-":
                     finalNum = numbs[1] - numbs[0];
                     break;
-                case "mul":
+                case "*":
                     finalNum = numbs[1] * numbs[0];
                     break;
-                case "div":
+                case "/":
                     finalNum = numbs[1] / numbs[0];
                     break;
-                case "pow":
-                    finalNum = (int)Math.Pow(numbs[1], numbs[0]);
+                case "%":
+                    finalNum = numbs[1] % numbs[0];
                     break;
             }
 
