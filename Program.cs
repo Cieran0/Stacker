@@ -9,7 +9,7 @@ namespace Stacker
 
         public static byte[] MEMORY = new byte[short.MaxValue];
 
-        static string[] commandNames = { "push", "print", "pop", "dup", "maths", "mem", "inc", "dec", "swap", "exit" };
+        static string[] commandNames = { "push", "print", "pop", "dup", "maths", "mem", "inc", "dec", "swap", "exit", "input" };
         static string[] blockNames = { "LOOP", "IF", "ELSE", "ELIF" };
 
         public static bool SkipElses = true;

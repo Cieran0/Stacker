@@ -10,16 +10,16 @@ namespace Stacker
         public enum COMMANDS
         {
             //COMMANDS
-            push, print, pop, dup, maths, mem, inc, dec, swap, exit,
+            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input,
             //BLOCKS
             LOOP, IF, ELSE, ELIF
         }
 
         static Dictionary<COMMANDS, Action<string[]>> commandDict = new Dictionary<COMMANDS, Action<string[]>>()
         {
-            { COMMANDS.push,  PUSH  }, { COMMANDS.print, PRINT }, { COMMANDS.pop, POP }, { COMMANDS.dup, DUP },
-            { COMMANDS.maths, MATHS }, { COMMANDS.mem,   MEM   }, { COMMANDS.inc, INC }, { COMMANDS.dec, DEC }, 
-            { COMMANDS.swap,  SWAP  }, { COMMANDS.exit,  EXIT  }
+            { COMMANDS.push,  PUSH  }, { COMMANDS.print, PRINT }, { COMMANDS.pop,   POP   }, { COMMANDS.dup, DUP },
+            { COMMANDS.maths, MATHS }, { COMMANDS.mem,   MEM   }, { COMMANDS.inc,   INC   }, { COMMANDS.dec, DEC }, 
+            { COMMANDS.swap,  SWAP  }, { COMMANDS.exit,  EXIT  }, { COMMANDS.input, INPUT }
         };
 
         static Dictionary<COMMANDS, Action<string[], Token[]>> blockDict = new Dictionary<COMMANDS, Action<string[], Token[]>>()
