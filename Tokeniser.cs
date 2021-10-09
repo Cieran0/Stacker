@@ -49,7 +49,14 @@ namespace Stacker
                     if (!vaild) throw new UnkownStringException(s);
                 }
             }
-            if (!string.IsNullOrWhiteSpace(s)) throw new UnkownStringException(s);
+            if (!string.IsNullOrWhiteSpace(s)) {
+                string[] keywords = Enum.GetNames(typeof(COMMANDS));
+                for (int i = 0; i < keywords.Length; i++) 
+                { 
+                    if (s == keywords[i]) throw new InvalidCharacterException('(', ' ', (COMMANDS)i); 
+                }
+                throw new UnkownStringException(s); 
+            }
             return tokens.ToArray();
         }
 
