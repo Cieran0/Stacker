@@ -165,6 +165,32 @@ namespace Stacker
 
         public static void DEC(string[] args) { ModifyTop(args, -1); }
 
+        public static void INPUT(string[] args)
+        {
+            CheckArgs(1, 1, args);
+            switch (args[0])
+            {
+                case "%b":
+                    stack.Push(byte.Parse(Console.ReadLine()));
+                    break;
+                case "%i":
+                    PushByteArray(ShortToBytes(short.Parse(Console.ReadLine())));
+                    break;
+                case "%c":
+                    stack.Push((byte)(Console.ReadLine()[0]));
+                    break;
+                case "%s":
+                    PushString(Console.ReadLine());
+                    break;
+            }
+        }
+
+        public static void EXIT(string[] args) { CheckArgs(0, 0, args); Environment.Exit(0); }
+
+        public static void ESCAPE(string[] args) { CheckArgs(0, 0, args); Escaping = true; }
+
+        public static void RUN(string[] args) { CheckArgs(1, 1, args); Interpret(Tokeniser.Tokenise(ReadInFile(args[0]))); }
+
         //BLOCKS
         public static void LOOP(string[] args, Token[] tokens)
         {
@@ -203,30 +229,6 @@ namespace Stacker
             for (int i = 0; i < 2; i++) for (int j = 0; j < size; j++) { toSwap[i, j] = stack.Pop(); }
             for (int i = 0; i < 2; i++) for (int j = size - 1; j >= 0; j--) { stack.Push(toSwap[i,j]); }
         }
-
-        public static void INPUT(string[] args) 
-        {
-            CheckArgs(1, 1, args);
-            switch (args[0]) 
-            {
-                case "%b":
-                    stack.Push(byte.Parse(Console.ReadLine()));
-                    break;
-                case "%i":
-                    PushByteArray(ShortToBytes(short.Parse(Console.ReadLine())));
-                    break;
-                case "%c":
-                    stack.Push((byte)(Console.ReadLine()[0]));
-                    break;
-                case "%s":
-                    PushString(Console.ReadLine());
-                    break;
-            }
-        }
-
-        public static void EXIT(string[] args) { CheckArgs(0, 0, args); Environment.Exit(0); }
-
-        public static void ESCAPE(string[] args) { CheckArgs(0, 0, args); Escaping = true; }
 
         //If From Stack Get From Stack Else Parse Integer
         private static int IFSGFSEPI(string arg) 

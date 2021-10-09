@@ -22,6 +22,14 @@ namespace Stacker
         public static NotImplementedException notImplemented = new NotImplementedException();
         public static ArgumentException argumentException = new ArgumentException();
 
+        public enum COMMANDS
+        {
+            //COMMANDS
+            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input, escape, run,
+            //BLOCKS
+            LOOP, IF, ELSE, ELIF
+        }
+
         static void Main(string[] args)
         {
             string input = "";
@@ -47,7 +55,7 @@ namespace Stacker
 
         }
 
-        static string ReadInFile(string path)
+        public static string ReadInFile(string path)
         {
             string formated = "";
             string[] lines = System.IO.File.ReadAllLines(path);
@@ -72,14 +80,6 @@ namespace Stacker
             public string Svalue;
             public int index;
             public Token[] Tvalue;
-        }
-
-        public enum COMMANDS
-        {
-            //COMMANDS
-            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input, escape,
-            //BLOCKS
-            LOOP, IF, ELSE, ELIF
         }
 
     }
