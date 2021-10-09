@@ -10,8 +10,9 @@ namespace Stacker
     class Program
     {
         const string VER = "0.1.0\n";
+        const short MAX_MEM = 32001;
 
-        public static byte[] MEMORY = new byte[short.MaxValue];
+        public static byte[] MEMORY = new byte[MAX_MEM];
 
         public static bool SkippingElses = true;
         public static bool Escaping = false;
