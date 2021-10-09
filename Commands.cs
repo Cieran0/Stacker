@@ -220,6 +220,8 @@ namespace Stacker
 
         public static void ELIF(string[] args, Token[] tokens) { CheckArgs(3, 3, args, "ELIF"); Conditional(args, tokens); }
 
+        public static void ELSE(string[] args, Token[] tokens) { CheckArgs(0, 0, args, "ELSE"); SkippingElses = true; Interpret(tokens); }
+
         //Useful functions
 
         private static void CheckArgs(int min, int max, string[] args, string name) { if (args.Length > max || args.Length < min) { throw new WrongNumberOfArgumentsException(min, max, args.Length, name); } }
