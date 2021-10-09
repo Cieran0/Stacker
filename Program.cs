@@ -25,7 +25,7 @@ namespace Stacker
         public enum COMMANDS
         {
             //COMMANDS
-            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input, escape, run,
+            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input, escape, run, dump,
             //BLOCKS
             LOOP, IF, ELSE, ELIF
         }

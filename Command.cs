@@ -13,7 +13,7 @@ namespace Stacker
             { COMMANDS.push,  PUSH  }, { COMMANDS.print, PRINT }, { COMMANDS.pop,   POP   }, { COMMANDS.dup,    DUP    },
             { COMMANDS.maths, MATHS }, { COMMANDS.mem,   MEM   }, { COMMANDS.inc,   INC   }, { COMMANDS.dec,    DEC    }, 
             { COMMANDS.swap,  SWAP  }, { COMMANDS.exit,  EXIT  }, { COMMANDS.input, INPUT }, { COMMANDS.escape, ESCAPE },
-            { COMMANDS.run,   RUN   }
+            { COMMANDS.run,   RUN   }, { COMMANDS.dump,  DUMP  }
         };
 
         public static Dictionary<COMMANDS, Action<string[], Token[]>> blockDict = new Dictionary<COMMANDS, Action<string[], Token[]>>()

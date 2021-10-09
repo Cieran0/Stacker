@@ -191,6 +191,8 @@ namespace Stacker
 
         public static void RUN(string[] args) { CheckArgs(1, 1, args); Interpret(Tokeniser.Tokenise(ReadInFile(args[0]))); }
 
+        public static void DUMP(string[] args) { CheckArgs(0, 0, args); stack.Clear(); }
+
         //BLOCKS
         public static void LOOP(string[] args, Token[] tokens)
         {

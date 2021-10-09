@@ -26,4 +26,4 @@ LOOP("stk")
 	}
 	push("%b",10) print("%c")
 	inc()
-}
+} dump()
