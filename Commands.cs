@@ -152,6 +152,9 @@ namespace Stacker
                 case "set":
                     SetMem(length);
                     break;
+                case "setp":
+                    SetMem(length,true);
+                    break;
                 default:
                     throw argumentException;
             }
@@ -263,11 +266,11 @@ namespace Stacker
             for (int i = pointer + (length - 1); i >= pointer; i--) stack.Push(MEMORY[i]);
         }
 
-        private static void SetMem(int length)
+        private static void SetMem(int length, bool pushPointer = false)
         {
             short pointer = PopShort();
             for (int i = pointer; i < pointer + length; i++) { MEMORY[i] = stack.Pop(); }
-            PushByteArray(ShortToBytes(pointer));
+            if(pushPointer)PushByteArray(ShortToBytes(pointer));
         }
 
         private static void PushString(string s)
