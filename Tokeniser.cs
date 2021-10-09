@@ -76,7 +76,7 @@ namespace Stacker
             i += j;
             j = 1; k = 0;
 
-            while (input[i + j] != '{') if (!char.IsWhiteSpace(input[i + j])) throw argumentException; else { j++; }
+            while (input[i + j] != '{') if (!char.IsWhiteSpace(input[i + j])) throw new InvalidCharacterException('{',input[i+j],(COMMANDS)index); else { j++; }
             j++;
             while (!CanLeave)
             {
