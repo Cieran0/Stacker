@@ -27,15 +27,27 @@ namespace Stacker
         {
             List<Token> tokens = new List<Token>();
             string s = "";
+            string SuperS = "";
+            bool vaild = false;
 
             for (int i = 0; i < input.Length; i++)
             {
-                if (!char.IsWhiteSpace(input[i])) { s += input[i]; }
-                for (int q = 0; q < commands.Length; q++) if (s == ((COMMANDS)q).ToString())
+                s += input[i];
+                if (input[i] == '(') 
+                {
+                    SuperS = s.Trim();
+                    vaild = false;
+                    for (int q = 0; q < commands.Length; q++)
                     {
-                        if (IsBlock(q)) { AddBlockToken(ref tokens, q, input, ref i); s = ""; }
-                        else AddCommandToken(ref tokens, q, input, ref i); s = "";
+                        if (SuperS == ((COMMANDS)q).ToString()+'(')
+                        {
+                            if (IsBlock(q)) { i--; AddBlockToken(ref tokens, q, input, ref i); s = "";}
+                            else { i--; AddCommandToken(ref tokens, q, input, ref i); s = ""; }
+                            vaild = true;
+                        }
                     }
+                    if (!vaild) throw new UnkownStringException(s);
+                }
             }
             if (!string.IsNullOrWhiteSpace(s)) throw new UnkownStringException(s);
             return tokens.ToArray();

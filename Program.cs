@@ -63,6 +63,7 @@ namespace Stacker
 
         public static string ReadInFile(string path)
         {
+            if (!System.IO.File.Exists(path)) throw new FileNotFoundException(path);
             string formated = "";
             string[] lines = System.IO.File.ReadAllLines(path);
             foreach (string line in lines)
