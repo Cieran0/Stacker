@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using static Stacker.Command;
+using Colour = System.ConsoleColor;
 using static Stacker.ExecutionEngine;
 using static Stacker.Tokeniser;
 
@@ -17,7 +16,7 @@ namespace Stacker
         public static bool SkippingElses = true;
         public static bool Escaping = false;
 
-        public static Command[] commands;
+        public static Command[] commands = new Command[Enum.GetNames(typeof(COMMANDS)).Length];
         public static Stack<byte> stack = new Stack<byte>();
         public static NotImplementedException notImplemented = new NotImplementedException();
         public static ArgumentException argumentException = new ArgumentException();
@@ -30,24 +29,33 @@ namespace Stacker
             LOOP, IF, ELSE, ELIF
         }
 
+        private static void InitCommands() { for (byte i = 0; i < commands.Length; i++) { commands[i] = new Command(i); } }
+
+        private static void PrintVer() { Console.Write("Stacker v"); Console.ForegroundColor = Colour.Green; Console.Write(VER); }
+
         static void Main(string[] args)
         {
-            string input = "";
-            commands = new Command[Enum.GetNames(typeof(COMMANDS)).Length];
-            for (byte i = 0; i < commands.Length; i++) { commands[i] = new Command(i); }
-            Console.Write("Stacker v");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(VER);
-            Console.ForegroundColor = ConsoleColor.Red;
+            InitCommands();
+            PrintVer();
+            Console.ForegroundColor = Colour.Red;
             Console.Write(">>> ");
+            string input = "";
             while (true)
             {
                 SkippingElses = Escaping = false;
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.ForegroundColor = Colour.White;
                 input = Console.ReadLine();
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Interpret(Tokenise(input));
-                Console.ForegroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = Colour.Blue;
+                try
+                {
+                    Interpret(Tokenise(input));
+                }
+                catch (Exception ex) {
+                    MEMORY = new byte[MAX_MEM];
+                    Console.ForegroundColor = Colour.Red;
+                    Console.WriteLine("Error: {0}", ex);
+                }
+                
                 if (Console.CursorLeft != Console.WindowLeft) Console.Write('\n'); 
                 Console.Write(">>> ");
             }
