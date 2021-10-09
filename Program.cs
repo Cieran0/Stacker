@@ -46,8 +46,7 @@ namespace Stacker
                 Console.ForegroundColor = ConsoleColor.White;
                 input = Console.ReadLine();
                 Console.ForegroundColor = ConsoleColor.Blue;
-                if (input.StartsWith('\"') && input.EndsWith('\"')) { Interpret(Tokenise(ReadInFile(input.Substring(1, input.Length-2)))) ; }
-                else Interpret(Tokenise(input));
+                Interpret(Tokenise(input));
                 Console.ForegroundColor = ConsoleColor.Red;
                 if (Console.CursorLeft != Console.WindowLeft) Console.Write('\n'); 
                 Console.Write(">>> ");
