@@ -17,16 +17,16 @@
 // BFmem[10] = *20010
 
 input("%s")
-dup(2) push("%i",31999) mem("set",2)  //length,[str]
+dup(2) push("%i",31999) mem("set",2) 
 push("%i",0) swap(2) mem("set","stk")
-push("%i",0) push("%i",31995) mem("set",2) // memPos = 0 
-push("%i",0) push("%i",31997) mem("set",2) // Pos = 0 
-push("%i",0) push("%i",31993) mem("set",2) // loop = 0 
+push("%i",0) push("%i",31995) mem("set",2)  
+push("%i",0) push("%i",31997) mem("set",2) 
+push("%i",0) push("%i",31993) mem("set",2) 
 
 LOOP(0) {
-	push("%i",0) push("%i",31997) mem("get",2) maths("+") mem("get") // input[pos]
+	push("%i",0) push("%i",31997) mem("get",2) maths("+") mem("get")
 
-	LOOP(7) { dup(1) } // input[pos] 8 times
+	LOOP(7) { dup(1) }
 
 	IF("stk8","==",62) { push("%i",31995) mem("get",2) inc() dup(2) IF("stk",">",10000) { pop(2) push("%i",0) } push("%i",31995) mem("set",2) }
 	IF("stk8","==",60) { push("%i",31995) mem("get",2) dec() dup(2) IF("stk","<",0) { pop(2) push("%i",10000) } push("%i",31995) mem("set",2) }
@@ -51,9 +51,9 @@ LOOP(0) {
 		IF("stk8","==",93) { push("%i",31993) mem("get",2) dec() push("%i",31993) mem("set",2) }
 	  
 	}
-	push("%i",31997) mem("get",2) // pos
-	push("%i",31999) mem("get",2) // length, pos
-	//if pos >= length
+	push("%i",31997) mem("get",2) 
+	push("%i",31999) mem("get",2) 
+
 	IF("stk",">=","stk") { escape() }
 	ELSE() { push("%i",31997) mem("get",2) inc() push("%i",31997) mem("set",2) }
 } dump()
