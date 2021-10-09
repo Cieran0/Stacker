@@ -18,7 +18,7 @@ namespace Stacker
 
         public static Dictionary<COMMANDS, Action<string[], Token[]>> blockDict = new Dictionary<COMMANDS, Action<string[], Token[]>>()
         {
-            { COMMANDS.LOOP, LOOP},{ COMMANDS.IF, IF},{ COMMANDS.ELSE, ELSE},{ COMMANDS.ELIF, IF}
+            { COMMANDS.LOOP, LOOP},{ COMMANDS.IF, IF},{ COMMANDS.ELSE, ELSE},{ COMMANDS.ELIF, ELIF}
         };
 
         public COMMANDS INDEX { get; }

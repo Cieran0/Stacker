@@ -19,7 +19,6 @@ namespace Stacker
         public static Command[] commands = new Command[Enum.GetNames(typeof(COMMANDS)).Length];
         public static Stack<byte> stack = new Stack<byte>();
         public static NotImplementedException notImplemented = new NotImplementedException();
-        public static ArgumentException argumentException = new ArgumentException();
 
         public enum COMMANDS
         {

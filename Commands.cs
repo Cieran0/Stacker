@@ -6,9 +6,10 @@ namespace Stacker
 {
     class Commands
     {
+        //COMMANDS
         public static void PUSH(string[] args)
         {
-            CheckArgs(2, 2, args);
+            CheckArgs(2, 2, args, "push");
             switch (args[0])
             {
                 case "%b":
@@ -24,7 +25,7 @@ namespace Stacker
                     PushString(args[1]);
                     break;
                 default:
-                    throw argumentException;
+                    throw new InvalidArgumentException(args[0],"push");
             }
         }
 
@@ -35,7 +36,7 @@ namespace Stacker
             int loc = 0;
             bool eightBit = false;
 
-            CheckArgs(1, 2, args);
+            CheckArgs(1, 2, args,"maths");
 
             if (args.Length == 2)
             {
@@ -84,11 +85,9 @@ namespace Stacker
 
         }
 
-        private static void CheckArgs(int min, int max, string[] args) { if (args.Length > max || args.Length < min) { throw argumentException; } }
-
         public static void DUP(string[] args)
         {
-            CheckArgs(0, 1, args);
+            CheckArgs(0, 1, args,"dup");
             if (args.Length == 0)
             {
                 byte x = stack.Pop();
@@ -106,14 +105,14 @@ namespace Stacker
 
         public static void POP(string[] args)
         {
-            CheckArgs(0, 1, args);
+            CheckArgs(0, 1, args, "pop");
             if (args.Length > 0) { int size = IFSGFSEPI(args[0]); for (int i = 0; i < size; i++) stack.Pop(); }
             else stack.Pop();
         }
 
         public static void PRINT(string[] args)
         {
-            CheckArgs(1, 1, args);
+            CheckArgs(1, 1, args, "print");
             string WhatToPrint = "";
             switch (args[0])
             {
@@ -139,7 +138,7 @@ namespace Stacker
 
         public static void MEM(string[] args)
         {
-            CheckArgs(1, 2, args);
+            CheckArgs(1, 2, args, "mem");
             string op = args[0];
             int length = 1;
             if (args.Length > 1) length = IFSGFSEPI(args[1]);
@@ -147,7 +146,7 @@ namespace Stacker
             switch (op)
             {
                 case "clear":
-                    if (args.Length > 1) throw argumentException; 
+                    if (args.Length > 1) throw new WrongNumberOfArgumentsException(1,1,args.Length,"mem"); 
                     MEMORY = new byte[MAX_MEM];
                     break;
                 case "get":
@@ -160,18 +159,18 @@ namespace Stacker
                     SetMem(length,true);
                     break;
                 default:
-                    throw argumentException;
+                    throw new InvalidArgumentException(op,"mem");
             }
 
         }
 
-        public static void INC(string[] args) { ModifyTop(args, 1); }
+        public static void INC(string[] args) { CheckArgs(0, 1, args, "inc"); ModifyTop(args, 1); }
 
-        public static void DEC(string[] args) { ModifyTop(args, -1); }
+        public static void DEC(string[] args) { CheckArgs(0, 1, args, "dec"); ModifyTop(args, -1); }
 
         public static void INPUT(string[] args)
         {
-            CheckArgs(1, 1, args);
+            CheckArgs(1, 1, args,"input");
             switch (args[0])
             {
                 case "%b":
@@ -189,30 +188,47 @@ namespace Stacker
             }
         }
 
-        public static void EXIT(string[] args) { CheckArgs(0, 0, args); Environment.Exit(0); }
+        public static void EXIT(string[] args) { CheckArgs(0, 0, args,"exit"); Environment.Exit(0); }
 
-        public static void ESCAPE(string[] args) { CheckArgs(0, 0, args); Escaping = true; }
+        public static void ESCAPE(string[] args) { CheckArgs(0, 0, args,"escape"); Escaping = true; }
 
-        public static void RUN(string[] args) { CheckArgs(1, 1, args); Interpret(Tokeniser.Tokenise(ReadInFile(args[0]))); }
+        public static void RUN(string[] args) { CheckArgs(1, 1, args,"run"); Interpret(Tokeniser.Tokenise(ReadInFile(args[0]))); }
 
-        public static void DUMP(string[] args) { CheckArgs(0, 0, args); stack.Clear(); }
+        public static void DUMP(string[] args) { CheckArgs(0, 0, args,"dump"); stack.Clear(); }
+
+        public static void SWAP(string[] args)
+        {
+            CheckArgs(0, 1, args, "swap");
+            int size = 1;
+            if (args.Length > 0) { size = IFSGFSEPI(args[0]); }
+            byte[,] toSwap = new byte[2, size];
+            for (int i = 0; i < 2; i++) for (int j = 0; j < size; j++) { toSwap[i, j] = stack.Pop(); }
+            for (int i = 0; i < 2; i++) for (int j = size - 1; j >= 0; j--) { stack.Push(toSwap[i, j]); }
+        }
 
         //BLOCKS
         public static void LOOP(string[] args, Token[] tokens)
         {
-            CheckArgs(1, 1, args);
+            CheckArgs(1, 1, args,"LOOP");
             int size = IFSGFSEPI(args[0]);
-            if (size < 0) { throw argumentException; }
+            if (size < 0) { throw new InvalidArgumentException(size,"LOOP"); }
             if (size == 0) while (true) { if (Escaping) { Escaping = false; break; } Interpret(tokens); }
             else for (int i = 0; i < size; i++) { if (Escaping) { Escaping = false; break; } Interpret(tokens); }
         }
 
-        public static void IF(string[] args, Token[] tokens) 
+        public static void IF(string[] args, Token[] tokens) { CheckArgs(3, 3, args,"IF"); Conditional(args, tokens); }
+
+        public static void ELIF(string[] args, Token[] tokens) { CheckArgs(3, 3, args, "ELIF"); Conditional(args, tokens); }
+
+        //Useful functions
+
+        private static void CheckArgs(int min, int max, string[] args, string name) { if (args.Length > max || args.Length < min) { throw new WrongNumberOfArgumentsException(min, max, args.Length, name); } }
+
+        private static void Conditional(string[] args, Token[] tokens) 
         {
-            CheckArgs(3, 3, args);
-            int[] num = new int[2]; num[1] = IFSGFSEPI(args[2]); num[0] = IFSGFSEPI(args[0]); 
+            int[] num = new int[2]; num[1] = IFSGFSEPI(args[2]); num[0] = IFSGFSEPI(args[0]);
             bool condition = false;
-            switch (args[1]) 
+            switch (args[1])
             {
                 case "==": condition = (num[0] == num[1]); break;
                 case "!=": condition = (num[0] != num[1]); break;
@@ -222,18 +238,6 @@ namespace Stacker
                 case "<": condition = (num[0] < num[1]); break;
             }
             if (condition) { SkippingElses = true; Interpret(tokens); } else SkippingElses = false;
-        }
-
-        public static void ELSE(string[] args, Token[] tokens) { CheckArgs(0, 0, args); SkippingElses = true; Interpret(tokens); }
-
-        public static void SWAP(string[] args) 
-        {
-            CheckArgs(0, 1, args);
-            int size = 1;
-            if (args.Length > 0) { size = IFSGFSEPI(args[0]); }
-            byte[,] toSwap = new byte[2,size];
-            for (int i = 0; i < 2; i++) for (int j = 0; j < size; j++) { toSwap[i, j] = stack.Pop(); }
-            for (int i = 0; i < 2; i++) for (int j = size - 1; j >= 0; j--) { stack.Push(toSwap[i,j]); }
         }
 
         //If From Stack Get From Stack Else Parse Integer
@@ -251,7 +255,7 @@ namespace Stacker
 
         private static void ModifyTop(string[] args, int i)
         {
-            CheckArgs(0, 1, args);
+            
             if (args.Length > 0)
             {
                 switch (args[0])
