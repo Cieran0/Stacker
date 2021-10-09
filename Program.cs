@@ -1,6 +1,9 @@
 ﻿using System;
-using static Stacker.Command;
 using System.Collections.Generic;
+
+using static Stacker.Command;
+using static Stacker.ExecutionEngine;
+using static Stacker.Tokeniser;
 
 namespace Stacker
 {
@@ -9,7 +12,9 @@ namespace Stacker
         const string VER = "0.1.0\n";
 
         public static byte[] MEMORY = new byte[short.MaxValue];
+
         public static bool SkipElses = true;
+        public static bool isEscaping = false;
 
         public static Command[] commands;
         public static Stack<byte> stack = new Stack<byte>();
@@ -40,11 +45,11 @@ namespace Stacker
 
         }
 
-        static string ReadInFile(string path) 
+        static string ReadInFile(string path)
         {
             string formated = "";
             string[] lines = System.IO.File.ReadAllLines(path);
-            foreach (string line in lines) 
+            foreach (string line in lines)
             {
                 formated += " ";
                 if (line.Contains("//")) formated += line.Split("//")[0];
@@ -59,7 +64,6 @@ namespace Stacker
             ARGUMENT,
             BLOCK
         }
-         
         public struct Token
         {
             public TokenType type;
@@ -67,165 +71,14 @@ namespace Stacker
             public int index;
             public Token[] Tvalue;
         }
-    
-        static Token NewToken(TokenType type, string val)
+
+        public enum COMMANDS
         {
-            Token placeholder = new Token();
-            placeholder.type = type;
-            placeholder.Svalue = val;
-            return placeholder;
+            //COMMANDS
+            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input,
+            //BLOCKS
+            LOOP, IF, ELSE, ELIF
         }
 
-        static Token NewToken(TokenType type, int index, Token[] tokens=null)
-        {
-            Token placeholder = new Token();
-            placeholder.type = type;
-            placeholder.index = index;
-            if(tokens != null) placeholder.Tvalue = tokens;
-            return placeholder;
-        }
-
-        static Token[] Tokenise(string input)
-        {
-            List<Token> tokens = new List<Token>();
-            string s = "";
-
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (!char.IsWhiteSpace(input[i])) { s += input[i]; }
-                for (int q = 0; q < commands.Length; q++) if (s == ((COMMANDS)q).ToString()) 
-                    {
-                        if (q > (commandDict.Values.Count - 1)) { AddBlockToken(ref tokens, q, input, ref i); s = ""; }
-                        else AddCommandToken(ref tokens, q, input, ref i); s = "";
-                    }
-            }
-            return tokens.ToArray();
-        }
-
-        private static void AddBlockToken(ref List<Token> tokens, int index, string input, ref int i)
-        {
-            tokens.Add(NewToken(TokenType.BLOCK, index));
-            string ss = "";
-            int pos = tokens.Count - 1;
-            int j = 0;
-            int k = 0;
-            int open = 0;
-            bool CanLeave = false;
-
-            while (input[i + j] != ')')
-            {
-                if (input[i + j] == '\"')
-                {
-                    k = 1;
-                    while (input[i + j + k] != '\"') { ss += input[i + j + k]; k++; }
-                    tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-                    ss = ""; j += k;
-                }
-                else if (input[i + j] == ',' && ss != "")
-                {
-                    tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-                    ss = ""; j += k;
-                }
-                else if ((byte)input[i + j] >= 48 && (byte)input[i + j] <= 57)
-                {
-                    ss += input[i + j];
-                }
-                j++;
-            }
-            if (ss != "") tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-            i += j;
-            j = 1; k = 0;
-
-            while (input[i + j] != '{') if (!char.IsWhiteSpace(input[i + j])) throw argumentException; else { j++; }
-            j++;
-            while (!CanLeave)
-            {
-                if (input[i + j + k] == '}' && open == 0) { CanLeave = true; }
-                else if (input[i + j + k] == '{') { open++; }
-                else if (input[i + j + k] == '}') { open--; }
-                k++;
-            }
-            tokens[pos] = NewToken(TokenType.BLOCK, index, Tokenise(input.Substring((i + j), k)));
-            i = i + j + k;
-        }
-
-        static void AddCommandToken(ref List<Token> tokens, int index, string input, ref int i)
-        {
-            tokens.Add(NewToken(TokenType.COMMAND, index));
-            string ss = "";
-            int j = 0;
-            int k = 0;
-            while (input[i + j] != ')')
-            {
-                if (input[i + j] == '\"')
-                {
-                    k = 1;
-                    while (input[i + j + k] != '\"') { ss += input[i + j + k]; k++; }
-                    tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-                    ss = ""; j += k;
-                }
-                else if (input[i + j] == ',' && ss != "")
-                {
-                    tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-                    ss = ""; j += k;
-                }
-                else if ((byte)input[i + j] >= 48 && (byte)input[i + j] <= 57)
-                {
-                    ss += input[i + j];
-                }
-                j++;
-            }
-            if (ss != "")
-            {
-                tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-            }
-            ss = "";
-            i += j;
-        }
-
-        public static void Interpret(Token[] tokens)
-        {
-            bool skip = false;
-            string[] args;
-            int argCounter = 0;
-            int j = 0;
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                skip = false;
-                if (tokens[i].type != TokenType.ARGUMENT)
-                {
-                    j = 1;
-                    argCounter = 0;
-                    if (i + j < tokens.Length)
-                    {
-                        while (tokens[i + j].type == TokenType.ARGUMENT)
-                        {
-                            argCounter++;
-
-                            j++;
-                            if (i + j >= tokens.Length) { break; }
-                        }
-                    }
-                    args = new string[argCounter];
-                    for (int k = i + 1; k < i + j; k++) { args[k - (i + 1)] = tokens[k].Svalue; }
-                    if (tokens[i].type == TokenType.COMMAND)
-                    {
-                        commands[tokens[i].index].Execute(args);
-                    }
-                    else if(tokens[i].type == TokenType.BLOCK)
-                    {
-                        if (tokens[i].index == (int)COMMANDS.ELSE || tokens[i].index == (int)COMMANDS.ELIF)
-                        {
-                            if (SkipElses) skip=true;
-                        }
-                        else 
-                        { 
-                            SkipElses = false; 
-                        }
-                        if(!skip) commands[tokens[i].index].Execute(args, tokens[i].Tvalue);
-                    }
-                }
-            }
-        }
     }
 }
