@@ -9,8 +9,8 @@ namespace Stacker
 {
     class Program
     {
-        const string VER = "0.1.0\n";
-        const short MAX_MEM = 32001;
+        public const string VER = "0.1.0\n";
+        public const short MAX_MEM = 32001;
 
         public static byte[] MEMORY = new byte[MAX_MEM];
 

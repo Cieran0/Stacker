@@ -56,4 +56,4 @@ LOOP(0) {
 
 	IF("stk",">=","stk") { escape() }
 	ELSE() { push("%i",31997) mem("get",2) inc() push("%i",31997) mem("set",2) }
-} dump()
+} dump() mem("clear")

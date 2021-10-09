@@ -8,4 +8,4 @@ LOOP(24) {
 	push("%i",14) mem("get",2) push("%i",12) mem("set",2) pop(2)
 	push("%i",10) mem("get",2) push("%i",14) mem("set",2) pop(2)
 	push("%b",10) print("%c") 
-} dump()
+} dump() mem("clear")

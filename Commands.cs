@@ -146,6 +146,10 @@ namespace Stacker
 
             switch (op)
             {
+                case "clear":
+                    if (args.Length > 1) throw argumentException; 
+                    MEMORY = new byte[MAX_MEM];
+                    break;
                 case "get":
                     GetMem(length);
                     break;
