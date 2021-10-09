@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update="Tests\BF.stkr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Tests\FIB.stkr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
