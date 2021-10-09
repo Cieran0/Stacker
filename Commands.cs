@@ -168,8 +168,8 @@ namespace Stacker
             CheckArgs(1, 1, args);
             int size = IFSGFSEPI(args[0]);
             if (size < 0) { throw argumentException; }
-            if (size == 0) while (true) Interpret(tokens);
-            else for (int i = 0; i < size; i++) Interpret(tokens);
+            if (size == 0) while (true) { if (Escaping) { Escaping = false; break; } Interpret(tokens); }
+            else for (int i = 0; i < size; i++) { if (Escaping) { Escaping = false; break; } Interpret(tokens); }
         }
 
         public static void IF(string[] args, Token[] tokens) 
@@ -186,10 +186,10 @@ namespace Stacker
                 case ">": condition = (num[0] > num[1]); break;
                 case "<": condition = (num[0] < num[1]); break;
             }
-            if (condition) { SkipElses = true; Interpret(tokens); } else SkipElses = false;
+            if (condition) { SkippingElses = true; Interpret(tokens); } else SkippingElses = false;
         }
 
-        public static void ELSE(string[] args, Token[] tokens) { CheckArgs(0, 0, args); SkipElses = true; Interpret(tokens); }
+        public static void ELSE(string[] args, Token[] tokens) { CheckArgs(0, 0, args); SkippingElses = true; Interpret(tokens); }
 
         public static void SWAP(string[] args) 
         {
@@ -222,6 +222,8 @@ namespace Stacker
         }
 
         public static void EXIT(string[] args) { CheckArgs(0, 0, args); Environment.Exit(0); }
+
+        public static void ESCAPE(string[] args) { CheckArgs(0, 0, args); Escaping = true; }
 
         //If From Stack Get From Stack Else Parse Integer
         private static int IFSGFSEPI(string arg) 

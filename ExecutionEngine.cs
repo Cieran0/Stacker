@@ -6,13 +6,13 @@ namespace Stacker
     {
         public static void Interpret(Token[] tokens)
         {
-            bool skip = false;
             string[] args;
             int argCounter = 0;
             int j = 0;
             for (int i = 0; i < tokens.Length; i++)
             {
-                skip = false;
+                if (Escaping) break;
+                
                 if (tokens[i].type != TokenType.ARGUMENT)
                 {
                     j = 1;
@@ -35,15 +35,9 @@ namespace Stacker
                     }
                     else if (tokens[i].type == TokenType.BLOCK)
                     {
-                        if (tokens[i].index == (int)COMMANDS.ELSE || tokens[i].index == (int)COMMANDS.ELIF)
-                        {
-                            if (SkipElses) skip = true;
-                        }
-                        else
-                        {
-                            SkipElses = false;
-                        }
-                        if (!skip) commands[tokens[i].index].Execute(args, tokens[i].Tvalue);
+                        if (!(tokens[i].index == (int)COMMANDS.ELSE || tokens[i].index == (int)COMMANDS.ELIF)) SkippingElses = false;
+
+                        if (!SkippingElses) commands[tokens[i].index].Execute(args, tokens[i].Tvalue);
                     }
                 }
             }

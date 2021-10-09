@@ -13,8 +13,8 @@ namespace Stacker
 
         public static byte[] MEMORY = new byte[short.MaxValue];
 
-        public static bool SkipElses = true;
-        public static bool isEscaping = false;
+        public static bool SkippingElses = true;
+        public static bool Escaping = false;
 
         public static Command[] commands;
         public static Stack<byte> stack = new Stack<byte>();
@@ -33,6 +33,7 @@ namespace Stacker
             Console.Write(">>> ");
             while (true)
             {
+                SkippingElses = Escaping = false;
                 Console.ForegroundColor = ConsoleColor.White;
                 input = Console.ReadLine();
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -75,7 +76,7 @@ namespace Stacker
         public enum COMMANDS
         {
             //COMMANDS
-            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input,
+            push, print, pop, dup, maths, mem, inc, dec, swap, exit, input, escape,
             //BLOCKS
             LOOP, IF, ELSE, ELIF
         }
