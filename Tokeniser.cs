@@ -1,5 +1,5 @@
 ﻿using static Stacker.Program;
-//using static Stacker.Command;
+using System;
 using System.Collections.Generic;
 
 namespace Stacker
@@ -37,6 +37,7 @@ namespace Stacker
                         else AddCommandToken(ref tokens, q, input, ref i); s = "";
                     }
             }
+            if (!string.IsNullOrWhiteSpace(s)) throw new UnkownStringException(s);
             return tokens.ToArray();
         }
 
@@ -47,17 +48,18 @@ namespace Stacker
             tokens.Add(NewToken(TokenType.BLOCK, index));
             string ss = "";
             int pos = tokens.Count - 1;
-            int j = 0;
+            int j = 1;
             int k = 0;
             int open = 0;
             bool CanLeave = false;
-
+            if (i + j >= input.Length) { throw new ParenthesesNotFoundException('(', (COMMANDS)index); }
+            else if (input[i + j] != '(') { throw new InvalidCharacterException('(', input[i + j], (COMMANDS)index); }
             while (input[i + j] != ')')
             {
                 if (input[i + j] == '\"')
                 {
                     k = 1;
-                    while (input[i + j + k] != '\"') { ss += input[i + j + k]; k++; }
+                    while (input[i + j + k] != '\"') { ss += input[i + j + k]; k++; if (i + j + k >= input.Length) throw new TrailingParenthesesException('\"', (COMMANDS)index); }
                     tokens.Add(NewToken(TokenType.ARGUMENT, ss));
                     ss = ""; j += k;
                 }
@@ -71,12 +73,25 @@ namespace Stacker
                     ss += input[i + j];
                 }
                 j++;
+                if (i + j >= input.Length) throw new TrailingParenthesesException('(', (COMMANDS)index);
             }
             if (ss != "") tokens.Add(NewToken(TokenType.ARGUMENT, ss));
             i += j;
             j = 1; k = 0;
 
-            while (input[i + j] != '{') if (!char.IsWhiteSpace(input[i + j])) throw new InvalidCharacterException('{',input[i+j],(COMMANDS)index); else { j++; }
+            if (i + j >= input.Length) { throw new ParenthesesNotFoundException('{', (COMMANDS)index); }
+
+            while (input[i + j] != '{')
+            {
+                if (!char.IsWhiteSpace(input[i + j]))
+                {
+                    throw new InvalidCharacterException('{', input[i + j], (COMMANDS)index);
+                }
+                else
+                {
+                    j++; if (i + j >= input.Length) { throw new InvalidCharacterException('{', input[i + j], (COMMANDS)index); }
+                }
+            }
             j++;
             while (!CanLeave)
             {
@@ -84,8 +99,9 @@ namespace Stacker
                 else if (input[i + j + k] == '{') { open++; }
                 else if (input[i + j + k] == '}') { open--; }
                 k++;
+                if (i + j + k >= input.Length && !CanLeave) { throw new TrailingParenthesesException('{', (COMMANDS)index); }
             }
-            tokens[pos] = NewToken(TokenType.BLOCK, index, Tokenise(input.Substring((i + j), k)));
+            tokens[pos] = NewToken(TokenType.BLOCK, index, Tokenise(input.Substring((i + j), k-1)));
             i = i + j + k;
         }
 
@@ -93,14 +109,16 @@ namespace Stacker
         {
             tokens.Add(NewToken(TokenType.COMMAND, index));
             string ss = "";
-            int j = 0;
+            int j = 1;
             int k = 0;
+            if (i + j >= input.Length) { throw new ParenthesesNotFoundException('(', (COMMANDS)index); }
+            else if (input[i + j] != '(') { throw new InvalidCharacterException('(', input[i + j], (COMMANDS)index); }
             while (input[i + j] != ')')
             {
                 if (input[i + j] == '\"')
                 {
                     k = 1;
-                    while (input[i + j + k] != '\"') { ss += input[i + j + k]; k++; }
+                    while (input[i + j + k] != '\"') { ss += input[i + j + k]; k++; if (i + j + k >= input.Length) throw new TrailingParenthesesException('\"', (COMMANDS)index); }
                     tokens.Add(NewToken(TokenType.ARGUMENT, ss));
                     ss = ""; j += k;
                 }
@@ -114,6 +132,7 @@ namespace Stacker
                     ss += input[i + j];
                 }
                 j++;
+                if (i + j >= input.Length) throw new TrailingParenthesesException('(', (COMMANDS)index);
             }
             if (ss != "")
             {

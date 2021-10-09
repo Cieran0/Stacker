@@ -54,7 +54,7 @@ namespace Stacker
                     Console.ForegroundColor = Colour.Red;
                     Console.WriteLine("Error: {0}", ex);
                 }
-                
+                Console.ForegroundColor = Colour.Red;
                 if (Console.CursorLeft != Console.WindowLeft) Console.Write('\n'); 
                 Console.Write(">>> ");
             }
