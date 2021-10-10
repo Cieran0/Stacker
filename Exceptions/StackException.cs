@@ -4,12 +4,13 @@ using System.Text;
 
 namespace Stacker
 {
-    class StackEmptyException : Exception
+    class StackException : Exception
     {
         string message { get; }
-        public StackEmptyException() : base()
+        public StackException(bool overflow) : base()
         {
-            message = ($"Stack is empty.");
+            if (overflow) message = ($"Stack overflow.");
+            else message = ($"Stack underflow.");
         }
 
         public override string ToString()
