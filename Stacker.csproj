@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="Tests\BF.stkr">
+    <None Update="Examples\BF.stkr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Tests\FIB.stkr">
+    <None Update="Examples\FIB.stkr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Tests\FIZZBUZZ.stkr">
+    <None Update="Examples\FIZZBUZZ.stkr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

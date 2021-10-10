@@ -1,0 +1,11 @@
+﻿push("%i",0) push("%i",10) mem("set",2)
+push("%i",1) push("%i",12) mem("set",2)
+push("%i",0) push("%i",14) mem("set",2)
+
+LOOP(24) {
+	push("%i",10) mem("get",2) print("%i")
+	push("%i",12) mem("get",2) push("%i",14) mem("get",2) maths("+") push("%i",10) mem("set",2)
+	push("%i",14) mem("get",2) push("%i",12) mem("set",2)
+	push("%i",10) mem("get",2) push("%i",14) mem("set",2)
+	push("%b",10) print("%c") 
+} dump() mem("clear")

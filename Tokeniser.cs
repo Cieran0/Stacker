@@ -41,7 +41,7 @@ namespace Stacker
                     {
                         if (TrimmedStr == ((COMMANDS)currentKeyword).ToString()+'(')
                         {
-                            if (IsBlock(currentKeyword)) { i--; AddBlockToken(ref tokens, (COMMANDS)currentKeyword, input, ref i); CurrentStr = "";}
+                            if (IsBlock((COMMANDS)currentKeyword)) { i--; AddBlockToken(ref tokens, (COMMANDS)currentKeyword, input, ref i); CurrentStr = "";}
                             else { i--; AddCommandToken(ref tokens, (COMMANDS)currentKeyword, input, ref i); CurrentStr = ""; }
                             knownStr = true;
                         }
@@ -60,7 +60,7 @@ namespace Stacker
             return tokens.ToArray();
         }
 
-        private static bool IsBlock(int index) => char.IsUpper((index).ToString()[0]);
+        private static bool IsBlock(COMMANDS index) => char.IsUpper((index).ToString()[0]);
 
         private static void AddBlockToken(ref List<Token> tokens, COMMANDS index, string input, ref int i)
         {
@@ -108,35 +108,75 @@ namespace Stacker
 
         private static void AddArgumentTokens(ref List<Token> tokens, COMMANDS index, string input, ref int i, ref int j) 
         {
-            string ss = "";
+            string rawArgumentData = "";
             j = 1;
-            int k = 0;
             if (i + j >= input.Length) { throw new ParenthesesNotFoundException('(', index); }
             else if (input[i + j] != '(') { throw new InvalidCharacterException('(', input[i + j], index); }
             while (input[i + j] != ')')
             {
-                if (input[i + j] == '\"')
-                {
-                    k = 1;
-                    while (input[i + j + k] != '\"') { ss += input[i + j + k]; k++; if (i + j + k >= input.Length) throw new TrailingParenthesesException('\"', index); }
-                    tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-                    ss = ""; j += k;
-                }
-                else if (input[i + j] == ',' && ss != "")
-                {
-                    tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-                    ss = ""; j += k;
-                }
-                else if ((byte)input[i + j] >= 48 && (byte)input[i + j] <= 57)
-                {
-                    ss += input[i + j];
-                }
+                rawArgumentData += input[i + j];
                 j++;
                 if (i + j >= input.Length) throw new TrailingParenthesesException('(', index);
             }
-            if (ss != "") tokens.Add(NewToken(TokenType.ARGUMENT, ss));
-            ss = "";
+            foreach (string arg in ProcessArgumentData(rawArgumentData.Substring(1), index)) 
+            {
+                tokens.Add(NewToken(TokenType.ARGUMENT, arg));
+            }
             i += j;
+        }
+
+        private static string[] ProcessArgumentData(string rawArgumentData, COMMANDS index) 
+        {
+            if (rawArgumentData.EndsWith(',')) { throw new GenericException($"Unexpected ',' at the end of arugments in {index.ToString()}"); }
+            bool shouldBreak = false;
+            int i = 0;
+            int j = 0;
+            List<string> args = new List<string>();
+            while (i < rawArgumentData.Length) 
+            {
+                if (rawArgumentData[i] == ',') { i++; }
+                else if (char.IsNumber(rawArgumentData[i]))
+                {
+                    j = 0;
+                    while (char.IsNumber(rawArgumentData[i + j]))
+                    {
+                        j++;
+                        if (i + j >= rawArgumentData.Length) { args.Add(rawArgumentData.Substring(i, j)); shouldBreak = true; break; }
+                    }
+                    if (shouldBreak) { break; }
+                    if (rawArgumentData[i + j] != ',') { throw new GenericException($"{rawArgumentData.Substring(i, j)} in {index.ToString()} is an invalid number, make sure this number does not end with whitespace."); }
+                    args.Add(rawArgumentData.Substring(i, j));
+                    i++;
+                }
+                else if (rawArgumentData[i] != '\"')
+                {
+                    throw new GenericException($"String argument in {index.ToString()} must be inclosed in \'\"\', \'{rawArgumentData[i]}\' is not \'\"\'");
+                }
+                else if (rawArgumentData[i] == '\"')
+                {
+                    j = 1;
+                    if (i + j >= rawArgumentData.Length) { throw new TrailingParenthesesException('\"', index); }
+                    while (rawArgumentData[i + j] != '\"')
+                    {
+                        j++;
+                        if (i + j >= rawArgumentData.Length) { throw new TrailingParenthesesException('\"', index); }
+                    }
+                    if (i + j + 1 < rawArgumentData.Length)
+                    {
+                        j += 1;
+                        if (rawArgumentData[i + j] != ',')
+                        {
+                            throw new GenericException($"Arguments in ${index.ToString()} must be seperated by ',' \'{rawArgumentData[i + j]}\' is not ','.");
+                        }
+                        args.Add(rawArgumentData.Substring(i + 1, j - 2));
+                    }
+                    else { args.Add(rawArgumentData.Substring(i + 1, j - 1)); j += 1; }
+
+                    i += j;
+                }
+                else throw new GenericException($"Unreachable code executed in {"Tokeniser.ProcessArgumentData"}.");
+            }
+            return args.ToArray(); ;
         }
     }
 }
