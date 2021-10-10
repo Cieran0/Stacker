@@ -14,9 +14,11 @@ namespace Stacker
             switch (args[0])
             {
                 case "%b":
+                    if (!byte.TryParse(args[1], out _)) { throw new InvalidArgumentException(args[1], name + " %b"); }
                     stack.Push(byte.Parse(args[1]));
                     break;
                 case "%i":
+                    if (!short.TryParse(args[1], out _)) { throw new InvalidArgumentException(args[1], name + " %i"); }
                     PushByteArray(ShortToBytes(short.Parse(args[1])));
                     break;
                 case "%c":
@@ -176,14 +178,17 @@ namespace Stacker
 
         public static void INPUT(string[] args)
         {
+            GenericException invalidInput = new GenericException($"Invalid input");
             string name = "input";
             CheckArgs(1, 1, args,name);
             switch (args[0])
             {
                 case "%b":
+                    if (!byte.TryParse(Console.ReadLine(), out _)) throw invalidInput;
                     stack.Push(byte.Parse(Console.ReadLine()));
                     break;
                 case "%i":
+                    if (!short.TryParse(Console.ReadLine(), out _)) throw invalidInput;
                     PushByteArray(ShortToBytes(short.Parse(Console.ReadLine())));
                     break;
                 case "%c":

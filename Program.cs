@@ -51,7 +51,7 @@ namespace Stacker
                 }
                 catch (Exception ex) {
                     MEMORY = new byte[MAX_MEM];
-                    stack.Clear();
+                    if(ex is StackException) stack.Clear();
                     Console.ForegroundColor = Colour.Red;
                     Console.WriteLine("Error: {0}", ex);
                 }
