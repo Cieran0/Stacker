@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Colour = System.ConsoleColor;
 using static Stacker.ExecutionEngine;
+using static Stacker.Parser;
 using static Stacker.Tokeniser;
 
 namespace Stacker
@@ -16,6 +17,8 @@ namespace Stacker
         public static bool SkippingElses = true;
         public static bool Escaping = false;
 
+        public static List<string> keywords = new List<string>();
+        public static List<Function> functions = new List<Function>();
         public static Command[] commands = new Command[Enum.GetNames(typeof(COMMANDS)).Length];
         public static StackerStack<byte> stack = new StackerStack<byte>();
         public static NotImplementedException notImplemented = new NotImplementedException();
@@ -28,13 +31,18 @@ namespace Stacker
             LOOP, IF, ELSE, ELIF
         }
 
-        private static void InitCommands() { for (byte i = 0; i < commands.Length; i++) { commands[i] = new Command(i); } }
+        private static void Init() 
+        { 
+            for (byte i = 0; i < commands.Length; i++) commands[i] = new Command(i);
+            foreach (string s in Enum.GetNames(typeof(COMMANDS))) keywords.Add(s);
+            keywords.Add("define");
+        }
 
         private static void PrintVer() { Console.Write("Stacker v"); Console.ForegroundColor = Colour.Green; Console.Write(VER); }
 
         static void Main(string[] args)
         {
-            InitCommands();
+            Init();
             PrintVer();
             Console.ForegroundColor = Colour.Red;
             Console.Write(">>> ");
@@ -62,25 +70,12 @@ namespace Stacker
 
         }
 
-        public static string ReadInFile(string path)
-        {
-            if (!System.IO.File.Exists(path)) throw new FileNotFoundException(path);
-            string formated = "";
-            string[] lines = System.IO.File.ReadAllLines(path);
-            foreach (string line in lines)
-            {
-                formated += " ";
-                if (line.Contains("//")) formated += line.Split("//")[0];
-                else formated += line;
-            }
-            return formated;
-        }
-
         public enum TokenType
         {
             COMMAND,
             ARGUMENT,
-            BLOCK
+            BLOCK,
+            FUNCTIONCALL
         }
         public struct Token
         {

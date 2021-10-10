@@ -6,7 +6,7 @@ namespace Stacker
     class ParenthesesNotFoundException : Exception
     {
         string message { get; }
-        public ParenthesesNotFoundException(char parenthesesType, COMMANDS statement) : base()
+        public ParenthesesNotFoundException(char parenthesesType, string statement) : base()
         {
             message = ($"Parenthese \'{parenthesesType}\' not found for {statement} statement.");
         }

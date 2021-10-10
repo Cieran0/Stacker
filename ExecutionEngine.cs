@@ -1,4 +1,5 @@
 ﻿using static Stacker.Program;
+using static Stacker.Function;
 
 namespace Stacker
 {
@@ -38,6 +39,10 @@ namespace Stacker
                         if (!(tokens[i].index == COMMANDS.ELSE || tokens[i].index == COMMANDS.ELIF)) SkippingElses = false;
 
                         if (!SkippingElses) commands[(int)tokens[i].index].Execute(args, tokens[i].Tvalue);
+                    }
+                    else if (tokens[i].type == TokenType.FUNCTIONCALL) 
+                    {
+                        functionDict[tokens[i].Svalue].Execute(args);
                     }
                 }
             }

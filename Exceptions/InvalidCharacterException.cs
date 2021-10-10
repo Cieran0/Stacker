@@ -6,7 +6,7 @@ namespace Stacker
     class InvalidCharacterException : Exception
     {
         string message { get; }
-        public InvalidCharacterException(char expected, char given, COMMANDS statement) : base()
+        public InvalidCharacterException(char expected, char given, string statement) : base()
         {
             message = ($"Invalid character \'{given}\' after {statement} statement. Expected \'{expected}\'");
         }

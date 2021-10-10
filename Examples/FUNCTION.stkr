@@ -1,0 +1,1 @@
+﻿define function("&qq","&pp") { print("&qq") print(" ") print("&pp") }

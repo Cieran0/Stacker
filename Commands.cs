@@ -1,6 +1,7 @@
 ﻿using System;
-using static Stacker.Program;
 using static Stacker.ExecutionEngine;
+using static Stacker.Parser;
+using static Stacker.Program;
 
 namespace Stacker
 {
