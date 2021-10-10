@@ -9,6 +9,9 @@
     <None Update="Examples\BF.stkr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Examples\FUNCTION.stkr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Examples\FIB.stkr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
