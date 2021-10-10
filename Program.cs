@@ -85,7 +85,7 @@ namespace Stacker
         {
             public TokenType type;
             public string Svalue;
-            public int index;
+            public COMMANDS index;
             public Token[] Tvalue;
         }
 

@@ -31,13 +31,13 @@ namespace Stacker
                     for (int k = i + 1; k < i + j; k++) { args[k - (i + 1)] = tokens[k].Svalue; }
                     if (tokens[i].type == TokenType.COMMAND)
                     {
-                        commands[tokens[i].index].Execute(args);
+                        commands[(int)tokens[i].index].Execute(args);
                     }
                     else if (tokens[i].type == TokenType.BLOCK)
                     {
-                        if (!(tokens[i].index == (int)COMMANDS.ELSE || tokens[i].index == (int)COMMANDS.ELIF)) SkippingElses = false;
+                        if (!(tokens[i].index == COMMANDS.ELSE || tokens[i].index == COMMANDS.ELIF)) SkippingElses = false;
 
-                        if (!SkippingElses) commands[tokens[i].index].Execute(args, tokens[i].Tvalue);
+                        if (!SkippingElses) commands[(int)tokens[i].index].Execute(args, tokens[i].Tvalue);
                     }
                 }
             }
