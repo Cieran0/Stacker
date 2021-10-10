@@ -135,16 +135,22 @@ namespace Stacker
             while (i < rawArgumentData.Length) 
             {
                 if (rawArgumentData[i] == ',') { i++; }
-                else if (char.IsNumber(rawArgumentData[i]))
+                else if (char.IsNumber(rawArgumentData[i]) || rawArgumentData[i] == '-')
                 {
                     j = 0;
+                    if (rawArgumentData[i] == '-') 
+                    {
+                        j++;
+                        if (i + j >= rawArgumentData.Length) throw new GenericException($"'-' in {index.ToString()} should be followed directly by an integer");
+                        if (!char.IsNumber(rawArgumentData[i+j])) throw new GenericException($"'-' in {index.ToString()} should be followed directly by an integer");
+                    }
                     while (char.IsNumber(rawArgumentData[i + j]))
                     {
                         j++;
                         if (i + j >= rawArgumentData.Length) { args.Add(rawArgumentData.Substring(i, j)); shouldBreak = true; break; }
                     }
                     if (shouldBreak) { break; }
-                    if (rawArgumentData[i + j] != ',') { throw new GenericException($"{rawArgumentData.Substring(i, j)} in {index.ToString()} is an invalid number, make sure this number does not end with whitespace."); }
+                    if (rawArgumentData[i + j] != ',') { throw new GenericException($"{rawArgumentData.Substring(i, j)} in {index.ToString()} is an invalid integer, make sure this number does not end with whitespace."); }
                     args.Add(rawArgumentData.Substring(i, j));
                     i++;
                 }
