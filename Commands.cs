@@ -136,7 +136,7 @@ namespace Stacker
                     WhatToPrint = GetString();
                     break;
                 default:
-                    WhatToPrint = args[0];
+                    WhatToPrint = FormatString(args[0]);
                     break;
             }
             Console.Write(WhatToPrint);
@@ -180,22 +180,23 @@ namespace Stacker
         {
             GenericException invalidInput = new GenericException($"Invalid input");
             string name = "input";
+            string input = Console.ReadLine();
             CheckArgs(1, 1, args,name);
             switch (args[0])
             {
                 case "%b":
-                    if (!byte.TryParse(Console.ReadLine(), out _)) throw invalidInput;
-                    stack.Push(byte.Parse(Console.ReadLine()));
+                    if (!byte.TryParse(input, out _)) throw invalidInput;
+                    stack.Push(byte.Parse(input));
                     break;
                 case "%i":
-                    if (!short.TryParse(Console.ReadLine(), out _)) throw invalidInput;
-                    PushByteArray(ShortToBytes(short.Parse(Console.ReadLine())));
+                    if (!short.TryParse(input, out _)) throw invalidInput;
+                    PushByteArray(ShortToBytes(short.Parse(input)));
                     break;
                 case "%c":
-                    stack.Push((byte)(Console.ReadLine()[0]));
+                    stack.Push((byte)(input[0]));
                     break;
                 case "%s":
-                    PushString(Console.ReadLine());
+                    PushString(input);
                     break;
             }
         }
@@ -307,9 +308,11 @@ namespace Stacker
 
         private static void CheckPointer(short pointer) { if (pointer < 0 || pointer > MAX_MEM - 1) throw new GenericException($"Memory pointer must be between {0} and {MAX_MEM - 1}, {pointer} is not."); }
 
+        private static string FormatString(string s) { return s.Replace(@"\n", "\n"); }
+
         private static void PushString(string s)
         {
-            s = s.Replace(@"\n", "\n");
+            s = FormatString(s);
             stack.Push(0);
             for (int i = s.Length - 1; i >= 0; i--) { stack.Push((byte)s[i]); }
             PushByteArray(ShortToBytes((short)s.Length));

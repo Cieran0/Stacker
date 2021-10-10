@@ -1,0 +1,6 @@
+﻿print("----------\nFIB\n----------\n")
+run("Examples\FIB.stkr")
+print("----------\nFIZZBUZZ\n----------\n")
+run("Examples\FIZZBUZZ.stkr")
+print("----------\nBF\n----------\n")
+run("Examples\BF.stkr")
