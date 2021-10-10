@@ -277,15 +277,19 @@ namespace Stacker
         private static void GetMem(int length)
         {
             short pointer = PopShort();
+            CheckPointer(pointer);
             for (int i = pointer + (length - 1); i >= pointer; i--) stack.Push(MEMORY[i]);
         }
 
         private static void SetMem(int length, bool pushPointer = false)
         {
             short pointer = PopShort();
+            CheckPointer(pointer);
             for (int i = pointer; i < pointer + length; i++) { MEMORY[i] = stack.Pop(); }
             if(pushPointer)PushByteArray(ShortToBytes(pointer));
         }
+
+        private static void CheckPointer(short pointer) { if (pointer < 0 || pointer > MAX_MEM - 1) throw new GenericException($"Memory pointer must be between {0} and {MAX_MEM - 1}, {pointer} is not."); }
 
         private static void PushString(string s)
         {
