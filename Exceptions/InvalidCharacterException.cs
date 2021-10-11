@@ -8,7 +8,7 @@ namespace Stacker
         string message { get; }
         public InvalidCharacterException(char expected, char given, string statement) : base()
         {
-            message = ($"Invalid character \'{given}\' after {statement} statement. Expected \'{expected}\'");
+            message = ($"Invalid character \'{given}\' after {statement}. Expected \'{expected}\'");
         }
 
         public override string ToString()

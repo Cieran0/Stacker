@@ -28,18 +28,20 @@ namespace Stacker
 
         public void Execute(string[] args) 
         {
+            Token[] tokensToExecute = new Token[tokens.Length];
+            Array.Copy(tokens, tokensToExecute, tokens.Length);
             if (args.Length != this.args.Length) throw new WrongNumberOfArgumentsException(this.args.Length, this.args.Length, args.Length, name);
             for (int i = 0; i < args.Length; ++i) 
             {
-                for (int j = 0; j < tokens.Length; j++) 
+                for (int j = 0; j < tokensToExecute.Length; j++) 
                 {
-                    if (tokens[j].type == TokenType.ARGUMENT && tokens[j].Svalue == this.args[i]) 
+                    if (tokensToExecute[j].type == TokenType.ARGUMENT && tokensToExecute[j].Svalue == this.args[i]) 
                     {
-                        tokens[j].Svalue = args[i];
+                        tokensToExecute[j].Svalue = args[i];
                     }
                 }
             }
-            ExecutionEngine.Interpret(tokens);
+            ExecutionEngine.Interpret(tokensToExecute);
             
         }
     }

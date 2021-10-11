@@ -8,7 +8,7 @@ namespace Stacker
         string message { get; }
         public TrailingParenthesesException(char parenthesesType, string statement) : base()
         {
-            message = ($"Trailing parentheses \'{parenthesesType}\' in {statement} statement.");
+            message = ($"Trailing parentheses \'{parenthesesType}\' in {statement}");
         }
 
         public override string ToString()

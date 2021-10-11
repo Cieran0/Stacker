@@ -12,16 +12,15 @@ namespace Stacker
         public const string VER = "0.1.0\n";
         public const short MAX_MEM = 32001;
 
-        public static byte[] MEMORY = new byte[MAX_MEM];
+        public static byte[] MEMORY             ; 
 
-        public static bool SkippingElses = true;
-        public static bool Escaping = false;
+        public static bool SkippingElses = true ;
+        public static bool Escaping = false     ;
 
-        public static List<string> keywords = new List<string>();
-        public static List<Function> functions = new List<Function>();
-        public static Command[] commands = new Command[Enum.GetNames(typeof(COMMANDS)).Length];
-        public static StackerStack<byte> stack = new StackerStack<byte>();
-        public static NotImplementedException notImplemented = new NotImplementedException();
+        public static List<string> keywords     ;
+        public static List<Function> functions  ;
+        public static Command[] commands        ;
+        public static StackerStack<byte> stack  ;
 
         public enum COMMANDS
         {
@@ -32,9 +31,22 @@ namespace Stacker
         }
 
         private static void Init() 
-        { 
-            for (byte i = 0; i < commands.Length; i++) commands[i] = new Command(i);
-            foreach (string s in Enum.GetNames(typeof(COMMANDS))) keywords.Add(s);
+        {
+            string[] commandNames = Enum.GetNames(typeof(COMMANDS));
+
+            MEMORY = new byte[MAX_MEM];
+
+            SkippingElses = true  ;
+            Escaping      = false ;
+            
+            keywords  = new List<string>();
+            functions = new List<Function>();
+            commands  = new Command[commandNames.Length];
+            stack     = new StackerStack<byte>();
+
+            for (byte i = 0; i < commandNames.Length; i++) commands[i] = new Command(i);
+
+            foreach (string s in commandNames) keywords.Add(s);
             keywords.Add("define");
         }
 
@@ -55,6 +67,7 @@ namespace Stacker
                 Console.ForegroundColor = Colour.Blue;
                 try
                 {
+                    ExtractFunctions(ref input);
                     Interpret(Tokenise(input));
                 }
                 catch (Exception ex) {
