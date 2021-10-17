@@ -54,6 +54,23 @@ namespace Stacker
 
         static void Main(string[] args)
         {
+            if (args.Length > 0) 
+            {
+                if (System.IO.File.Exists(args[0])) 
+                {
+                    try
+                    {
+                        Interpret(Tokenise(ReadInFile(args[0])));
+                    } catch (Exception) 
+                    {
+                        Environment.Exit(1);
+                    }
+                    Environment.Exit(0);
+                }
+            }
+
+
+
             Init();
             PrintVer();
             Console.ForegroundColor = Colour.Red;
